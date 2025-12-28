@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-concert.png";
-import { ArrowRight, Users, MapPin, Zap } from "lucide-react";
+import { ArrowRight, Users, Globe, Zap } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -61,7 +61,8 @@ const Hero = () => {
               <p className="text-sm text-muted-foreground">Professionals</p>
             </div>
             <div className="text-center">
-              <div className="flex items-center justify-center text-foreground mb-1">
+              <div className="flex items-center justify-center gap-2 text-foreground mb-1">
+                <Globe className="w-5 h-5" />
                 <span className="font-display text-3xl font-bold">7</span>
               </div>
               <p className="text-sm text-muted-foreground">Cities</p>
@@ -77,12 +78,6 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 opacity-0 animate-fade-in animation-delay-600">
-        <div className="w-6 h-10 border-2 border-muted-foreground/50 flex items-start justify-center p-1">
-          <div className="w-1.5 h-3 bg-foreground animate-bounce" />
-        </div>
-      </div>
     </section>
   );
 };
