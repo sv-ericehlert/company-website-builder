@@ -5,12 +5,27 @@ const locations = {
     { city: "Los Angeles", country: "USA", venues: 120 },
     { city: "Miami", country: "USA", venues: 85 },
     { city: "New York", country: "USA", venues: 150 },
+    { city: "San Francisco", country: "USA", venues: 70 },
+    { city: "Chicago", country: "USA", venues: 65 },
+    { city: "San Diego", country: "USA", venues: 45 },
+    { city: "Las Vegas", country: "USA", venues: 90 },
   ],
   "Europe": [
     { city: "London", country: "UK", venues: 95 },
     { city: "Ibiza", country: "Spain", venues: 60 },
     { city: "Berlin", country: "Germany", venues: 75 },
     { city: "Amsterdam", country: "Netherlands", venues: 55 },
+    { city: "Barcelona", country: "Spain", venues: 80 },
+    { city: "Paris", country: "France", venues: 85 },
+  ],
+  "Latin America": [
+    { city: "Mexico City", country: "Mexico", venues: 70 },
+    { city: "Buenos Aires", country: "Argentina", venues: 55 },
+    { city: "Rio de Janeiro", country: "Brazil", venues: 65 },
+  ],
+  "Africa & Caucasus": [
+    { city: "Cape Town", country: "South Africa", venues: 40 },
+    { city: "Tbilisi", country: "Georgia", venues: 35 },
   ],
 };
 
