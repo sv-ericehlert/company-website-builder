@@ -72,10 +72,10 @@ const Features = () => {
               <img
                 src={feature.image}
                 alt=""
-                className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-50 group-hover:scale-105 transition-all duration-500"
+                className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-70 group-hover:scale-105 transition-all duration-500"
               />
               {/* Dark Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/80 to-background/60" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/60 to-background/40" />
               
               {/* Content */}
               <div className="relative z-10">
