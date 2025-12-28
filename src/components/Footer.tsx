@@ -1,4 +1,5 @@
 import Logo from "./Logo";
+import { Instagram } from "lucide-react";
 
 const footerLinks = {
   Platform: ["Find Work", "Hire Talent", "Browse Jobs", "Post a Job"],
@@ -20,15 +21,22 @@ const Footer = () => {
               professionals with opportunities worldwide.
             </p>
             <div className="flex gap-4">
-              {["Twitter", "Instagram", "LinkedIn"].map((social) => (
-                <a
-                  key={social}
-                  href="#"
-                  className="w-10 h-10 bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-primary/20 transition-colors"
-                >
-                  {social[0]}
-                </a>
-              ))}
+              <a
+                href="#"
+                className="w-10 h-10 bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-primary/20 transition-colors"
+                aria-label="X (Twitter)"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-primary/20 transition-colors"
+                aria-label="Instagram"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
             </div>
           </div>
 
