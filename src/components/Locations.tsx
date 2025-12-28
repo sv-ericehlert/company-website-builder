@@ -3,30 +3,30 @@ import worldMapNetwork from "@/assets/world-map-network.png";
 
 const locations = {
   "North America": [
-    { city: "Los Angeles", country: "USA", venues: 120 },
-    { city: "Miami", country: "USA", venues: 85 },
-    { city: "New York", country: "USA", venues: 150 },
-    { city: "San Francisco", country: "USA", venues: 70 },
-    { city: "Chicago", country: "USA", venues: 65 },
-    { city: "San Diego", country: "USA", venues: 45 },
-    { city: "Las Vegas", country: "USA", venues: 90 },
+    { city: "Los Angeles", country: "United States" },
+    { city: "Miami", country: "United States" },
+    { city: "New York", country: "United States" },
+    { city: "San Francisco", country: "United States" },
+    { city: "Chicago", country: "United States" },
+    { city: "San Diego", country: "United States" },
+    { city: "Las Vegas", country: "United States" },
   ],
   "Europe": [
-    { city: "London", country: "UK", venues: 95 },
-    { city: "Ibiza", country: "Spain", venues: 60 },
-    { city: "Berlin", country: "Germany", venues: 75 },
-    { city: "Amsterdam", country: "Netherlands", venues: 55 },
-    { city: "Barcelona", country: "Spain", venues: 80 },
-    { city: "Paris", country: "France", venues: 85 },
+    { city: "London", country: "United Kingdom" },
+    { city: "Ibiza", country: "Spain" },
+    { city: "Berlin", country: "Germany" },
+    { city: "Amsterdam", country: "Netherlands" },
+    { city: "Barcelona", country: "Spain" },
+    { city: "Paris", country: "France" },
   ],
   "Latin America": [
-    { city: "Mexico City", country: "Mexico", venues: 70 },
-    { city: "Buenos Aires", country: "Argentina", venues: 55 },
-    { city: "Rio de Janeiro", country: "Brazil", venues: 65 },
+    { city: "Mexico City", country: "Mexico" },
+    { city: "Buenos Aires", country: "Argentina" },
+    { city: "Rio de Janeiro", country: "Brazil" },
   ],
   "Africa & Asia": [
-    { city: "Cape Town", country: "South Africa", venues: 40 },
-    { city: "Tbilisi", country: "Georgia", venues: 35 },
+    { city: "Cape Town", country: "South Africa" },
+    { city: "Tbilisi", country: "Georgia" },
   ],
 };
 
@@ -84,16 +84,13 @@ const Locations = () => {
           {regionLocations.map((location, index) => (
             <div
               key={location.city}
-              className="group p-6 min-h-[176px] bg-card border border-border/50 card-glow text-center animate-scale-in"
+              className="group p-6 min-h-[120px] bg-card border border-border/50 card-glow text-center animate-scale-in flex flex-col items-center justify-center"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <h3 className="font-display text-2xl font-bold mb-1 group-hover:text-muted-foreground transition-colors">
                 {location.city}
               </h3>
-              <p className="text-muted-foreground text-sm mb-3">{location.country}</p>
-              <div className="inline-flex items-center gap-1 px-3 py-1 bg-foreground/10 text-foreground text-sm font-medium">
-                {location.venues} venues
-              </div>
+              <p className="text-muted-foreground text-sm">{location.country}</p>
             </div>
           ))}
 
