@@ -40,8 +40,7 @@ const Features = () => {
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
-            Everything You Need to{" "}
-            <span className="text-primary">Succeed</span>
+            Everything You Need to Succeed
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Whether you're looking for your next gig or building your dream team,
@@ -57,8 +56,8 @@ const Features = () => {
               className="group p-8 rounded-2xl bg-card border border-border/50 card-glow"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                <feature.icon className="w-7 h-7 text-primary" />
+              <div className="w-14 h-14 rounded-xl bg-foreground/10 flex items-center justify-center mb-6 group-hover:bg-foreground/20 transition-colors">
+                <feature.icon className="w-7 h-7 text-foreground" />
               </div>
               <h3 className="font-display text-xl font-bold mb-3">{feature.title}</h3>
               <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
