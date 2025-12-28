@@ -19,13 +19,6 @@ const Hero = () => {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 pt-40">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-elevated/80 backdrop-blur-sm border border-border/50 mb-8 opacity-0 animate-fade-in -mt-3">
-            <Zap className="w-3 h-3 text-foreground" />
-            <span className="text-xs font-medium text-muted-foreground">
-              The Entertainment Industry Network
-            </span>
-          </div>
 
           {/* Headline */}
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 opacity-0 animate-slide-up animation-delay-100">
