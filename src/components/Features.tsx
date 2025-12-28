@@ -24,7 +24,7 @@ const features = [
   {
     icon: Mic2,
     title: "Artists & Performers",
-    description: "Book talent or find your next gig at the world's most prestigious venues.",
+    description: "Find creative talent and venues across multiple cities when you need them.",
   },
   {
     icon: Calendar,
