@@ -44,7 +44,7 @@ const Locations = () => {
         src={worldMapNetwork}
         alt=""
         aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-cover object-center opacity-30 pointer-events-none select-none"
+        className="absolute inset-0 w-full h-full object-cover object-center opacity-50 pointer-events-none select-none"
         decoding="async"
       />
       {/* Background overlay for better text readability */}
