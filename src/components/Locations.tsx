@@ -36,7 +36,7 @@ const Locations = () => {
   const regionLocations = locations[activeRegion as keyof typeof locations];
 
   return (
-    <section id="locations" className="py-24 relative overflow-hidden min-h-[900px]">
+    <section id="locations" className="py-24 relative overflow-hidden min-h-[660px]">
       {/* Background image (fixed sizing so it doesn't change between tabs) */}
       <img
         src={worldMapNetwork}
