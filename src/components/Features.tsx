@@ -21,7 +21,7 @@ const features = [
   },
   {
     icon: MapPin,
-    title: "Location-Based",
+    title: "Location Based",
     description: "Filter opportunities by city - from LA to Ibiza, NYC to Berlin. Work where the action is.",
     image: featureLocation,
   },
