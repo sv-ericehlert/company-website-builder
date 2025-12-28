@@ -19,7 +19,7 @@ const features = [
   {
     icon: Camera,
     title: "Content Creators",
-    description: "Connect with videographers, photographers, and visual artists for your next production.",
+    description: "Connect with videographers, photographers, graphic designers, managers and content editors wherever you travel.",
   },
   {
     icon: Mic2,
