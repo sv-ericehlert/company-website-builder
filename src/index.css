@@ -133,6 +133,13 @@ All colors MUST be HSL.
   text-shadow: 0 0 40px hsl(var(--glow) / 0.5);
 }
 
+/* Text Outline Effect */
+.text-outline {
+  -webkit-text-stroke: 2px hsl(var(--primary));
+  text-stroke: 2px hsl(var(--primary));
+  paint-order: stroke fill;
+}
+
 /* Card Glow on Hover */
 .card-glow {
   transition: all 0.3s ease;
