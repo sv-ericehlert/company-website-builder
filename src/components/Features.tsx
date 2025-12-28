@@ -53,10 +53,10 @@ const Features = () => {
           {features.map((feature, index) => (
             <div
               key={feature.title}
-              className="group p-8 rounded-2xl bg-card border border-border/50 card-glow"
+              className="group p-8 bg-card border border-border/50 card-glow"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className="w-14 h-14 rounded-xl bg-foreground/10 flex items-center justify-center mb-6 group-hover:bg-foreground/20 transition-colors">
+              <div className="w-14 h-14 bg-foreground/10 flex items-center justify-center mb-6 group-hover:bg-foreground/20 transition-colors">
                 <feature.icon className="w-7 h-7 text-foreground" />
               </div>
               <h3 className="font-display text-xl font-bold mb-3">{feature.title}</h3>
