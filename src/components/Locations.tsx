@@ -38,7 +38,7 @@ const Locations = () => {
   const placeholdersCount = Math.max(0, maxLocations - regionLocations.length);
 
   return (
-    <section id="locations" className="py-24 relative overflow-hidden">
+    <section id="locations" className="py-24 relative overflow-hidden min-h-[720px] md:min-h-[780px]">
       {/* Background image (kept consistent by keeping section height consistent) */}
       <img
         src={worldMapNetwork}
@@ -84,7 +84,7 @@ const Locations = () => {
           {regionLocations.map((location, index) => (
             <div
               key={location.city}
-              className="group p-6 min-h-[120px] bg-card border border-border/50 card-glow text-center animate-scale-in flex flex-col items-center justify-center"
+              className="group p-6 min-h-[176px] bg-card border border-border/50 card-glow text-center animate-scale-in flex flex-col items-center justify-center"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <h3 className="font-display text-2xl font-bold mb-1 group-hover:text-muted-foreground transition-colors">
