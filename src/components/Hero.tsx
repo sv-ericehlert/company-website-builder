@@ -36,8 +36,7 @@ const Hero = () => {
 
           {/* Subheadline */}
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10 opacity-0 animate-slide-up animation-delay-200">
-            Connect with venues, artists, visual creatives, and production teams across the world&apos;s 
-            most iconic entertainment destinations.
+            Connect venues, artists, visual creatives, and production teams across global entertainment markets.
           </p>
 
           {/* CTAs */}
