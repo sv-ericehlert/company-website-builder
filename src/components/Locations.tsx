@@ -34,17 +34,16 @@ const Locations = () => {
   const [activeRegion, setActiveRegion] = useState<string>("North America");
 
   const regionLocations = locations[activeRegion as keyof typeof locations];
-  const maxLocations = Math.max(
-    ...Object.values(locations).map((arr) => arr.length)
-  );
-  const placeholdersCount = Math.max(0, maxLocations - regionLocations.length);
 
   return (
-    <section id="locations" className="py-24 relative overflow-hidden">
-      {/* Background image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center opacity-30"
-        style={{ backgroundImage: `url(${worldMapNetwork})` }}
+    <section id="locations" className="py-24 relative overflow-hidden min-h-[900px]">
+      {/* Background image (fixed sizing so it doesn't change between tabs) */}
+      <img
+        src={worldMapNetwork}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 w-full h-auto opacity-30 pointer-events-none select-none"
+        decoding="async"
       />
       {/* Background overlay for better text readability */}
       <div className="absolute inset-0 bg-background/50" />
@@ -94,14 +93,6 @@ const Locations = () => {
                 {location.venues} venues
               </div>
             </div>
-          ))}
-
-          {Array.from({ length: placeholdersCount }).map((_, i) => (
-            <div
-              key={`placeholder-${activeRegion}-${i}`}
-              aria-hidden="true"
-              className="p-6 bg-card border border-border/50 card-glow opacity-0 pointer-events-none select-none"
-            />
           ))}
         </div>
       </div>
