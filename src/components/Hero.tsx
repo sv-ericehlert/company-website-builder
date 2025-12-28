@@ -20,7 +20,7 @@ const Hero = () => {
       <div className="relative z-10 container mx-auto px-4 pt-40">
         <div className="max-w-4xl mx-auto text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-elevated/80 backdrop-blur-sm border border-border/50 mb-8 opacity-0 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface-elevated/80 backdrop-blur-sm border border-border/50 mb-8 opacity-0 animate-fade-in">
             <Zap className="w-4 h-4 text-foreground" />
             <span className="text-sm font-medium text-muted-foreground">
               The Entertainment Industry Network
@@ -80,8 +80,8 @@ const Hero = () => {
 
       {/* Scroll Indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 opacity-0 animate-fade-in animation-delay-600">
-        <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/50 flex items-start justify-center p-1">
-          <div className="w-1.5 h-3 bg-foreground rounded-full animate-bounce" />
+        <div className="w-6 h-10 border-2 border-muted-foreground/50 flex items-start justify-center p-1">
+          <div className="w-1.5 h-3 bg-foreground animate-bounce" />
         </div>
       </div>
     </section>
