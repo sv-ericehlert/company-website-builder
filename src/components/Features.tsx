@@ -23,7 +23,7 @@ const features = [
   },
   {
     icon: Mic2,
-    title: "Artists & Performers",
+    title: "Artists",
     description: "Find creative talent and venues across multiple cities when you need them.",
   },
   {
