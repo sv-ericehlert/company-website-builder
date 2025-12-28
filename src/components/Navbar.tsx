@@ -37,7 +37,7 @@ const Navbar = () => {
               Sign In
             </Button>
             <Button variant="default" size="sm">
-              Apply
+              Apply for Membership
             </Button>
           </div>
 
@@ -70,7 +70,7 @@ const Navbar = () => {
                   Sign In
                 </Button>
                 <Button variant="default" className="flex-1">
-                  Apply
+                  Apply for Membership
                 </Button>
               </div>
             </div>
