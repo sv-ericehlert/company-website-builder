@@ -9,7 +9,7 @@ const features = [
   {
     icon: Users,
     title: "Hire Talent",
-    description: "Access a curated network of industry professionals including videographers, photographers, and production crews.",
+    description: "Access a curated network of industry professionals including visual creatives, artists and production crews.",
   },
   {
     icon: MapPin,
