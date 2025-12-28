@@ -23,7 +23,7 @@ const locations = {
     { city: "Buenos Aires", country: "Argentina", venues: 55 },
     { city: "Rio de Janeiro", country: "Brazil", venues: 65 },
   ],
-  "Africa & Caucasus": [
+  "Africa & Asia": [
     { city: "Cape Town", country: "South Africa", venues: 40 },
     { city: "Tbilisi", country: "Georgia", venues: 35 },
   ],
