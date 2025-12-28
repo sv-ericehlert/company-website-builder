@@ -33,6 +33,12 @@ const locations = {
 const Locations = () => {
   const [activeRegion, setActiveRegion] = useState<string>("North America");
 
+  const regionLocations = locations[activeRegion as keyof typeof locations];
+  const maxLocations = Math.max(
+    ...Object.values(locations).map((arr) => arr.length)
+  );
+  const placeholdersCount = Math.max(0, maxLocations - regionLocations.length);
+
   return (
     <section id="locations" className="py-24 relative overflow-hidden">
       {/* Background image */}
@@ -73,8 +79,8 @@ const Locations = () => {
         </div>
 
         {/* Cities Grid */}
-        <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-5xl mx-auto min-h-[280px]">
-          {locations[activeRegion as keyof typeof locations].map((location, index) => (
+        <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+          {regionLocations.map((location, index) => (
             <div
               key={location.city}
               className="group p-6 bg-card border border-border/50 card-glow text-center animate-scale-in"
@@ -88,6 +94,14 @@ const Locations = () => {
                 {location.venues} venues
               </div>
             </div>
+          ))}
+
+          {Array.from({ length: placeholdersCount }).map((_, i) => (
+            <div
+              key={`placeholder-${activeRegion}-${i}`}
+              aria-hidden="true"
+              className="p-6 bg-card border border-border/50 card-glow opacity-0 pointer-events-none select-none"
+            />
           ))}
         </div>
       </div>
