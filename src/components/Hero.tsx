@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import heroImage from "@/assets/hero-concert.png";
+import heroImage from "@/assets/hero-dj-set.png";
 import { ArrowRight, Users, Globe, Zap } from "lucide-react";
 
 const Hero = () => {
@@ -9,7 +9,7 @@ const Hero = () => {
       <div className="absolute inset-0">
         <img
           src={heroImage}
-          alt="Concert crowd with electric blue stage lights"
+          alt="DJ performing at festival with electric blue stage lights and crowd"
           className="w-full h-full object-cover"
         />
         <div className="gradient-overlay absolute inset-0" />
