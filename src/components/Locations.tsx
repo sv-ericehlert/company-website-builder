@@ -1,4 +1,5 @@
 import { useState } from "react";
+import worldMapNetwork from "@/assets/world-map-network.png";
 
 const locations = {
   "North America": [
@@ -34,8 +35,13 @@ const Locations = () => {
 
   return (
     <section id="locations" className="py-24 relative overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 blur-3xl" />
+      {/* Background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-30"
+        style={{ backgroundImage: `url(${worldMapNetwork})` }}
+      />
+      {/* Background overlay for better text readability */}
+      <div className="absolute inset-0 bg-background/50" />
       
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
