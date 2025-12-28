@@ -12,8 +12,7 @@ const CTA = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="font-display text-4xl md:text-6xl font-bold mb-6">
-            Ready to Join the{" "}
-            <span className="text-primary text-glow">Network</span>?
+            Ready to Join the Network?
           </h2>
           <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
             Join thousands of entertainment professionals connecting, collaborating, 

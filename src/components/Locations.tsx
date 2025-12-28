@@ -26,7 +26,7 @@ const Locations = () => {
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
-            Global <span className="text-primary">Presence</span>
+            Global Presence
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             From Miami to Ibiza, connect with opportunities in the world's 
@@ -59,11 +59,11 @@ const Locations = () => {
               className="group p-6 rounded-2xl bg-card border border-border/50 card-glow text-center animate-scale-in"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <h3 className="font-display text-2xl font-bold mb-1 group-hover:text-primary transition-colors">
+              <h3 className="font-display text-2xl font-bold mb-1 group-hover:text-muted-foreground transition-colors">
                 {location.city}
               </h3>
               <p className="text-muted-foreground text-sm mb-3">{location.country}</p>
-              <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
+              <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-foreground/10 text-foreground text-sm font-medium">
                 {location.venues} venues
               </div>
             </div>

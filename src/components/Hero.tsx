@@ -21,7 +21,7 @@ const Hero = () => {
         <div className="max-w-4xl mx-auto text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-elevated/80 backdrop-blur-sm border border-border/50 mb-8 opacity-0 animate-fade-in">
-            <Zap className="w-4 h-4 text-primary" />
+            <Zap className="w-4 h-4 text-foreground" />
             <span className="text-sm font-medium text-muted-foreground">
               The Entertainment Industry Network
             </span>
@@ -54,21 +54,21 @@ const Hero = () => {
           {/* Stats */}
           <div className="grid grid-cols-3 gap-8 max-w-xl mx-auto opacity-0 animate-fade-in animation-delay-500">
             <div className="text-center">
-              <div className="flex items-center justify-center gap-2 text-primary mb-1">
+              <div className="flex items-center justify-center gap-2 text-foreground mb-1">
                 <Users className="w-5 h-5" />
                 <span className="font-display text-3xl font-bold">10K+</span>
               </div>
               <p className="text-sm text-muted-foreground">Professionals</p>
             </div>
             <div className="text-center">
-              <div className="flex items-center justify-center gap-2 text-primary mb-1">
+              <div className="flex items-center justify-center gap-2 text-foreground mb-1">
                 <MapPin className="w-5 h-5" />
                 <span className="font-display text-3xl font-bold">7</span>
               </div>
               <p className="text-sm text-muted-foreground">Cities</p>
             </div>
             <div className="text-center">
-              <div className="flex items-center justify-center gap-2 text-primary mb-1">
+              <div className="flex items-center justify-center gap-2 text-foreground mb-1">
                 <Zap className="w-5 h-5" />
                 <span className="font-display text-3xl font-bold">500+</span>
               </div>
@@ -81,7 +81,7 @@ const Hero = () => {
       {/* Scroll Indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 opacity-0 animate-fade-in animation-delay-600">
         <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/50 flex items-start justify-center p-1">
-          <div className="w-1.5 h-3 bg-primary rounded-full animate-bounce" />
+          <div className="w-1.5 h-3 bg-foreground rounded-full animate-bounce" />
         </div>
       </div>
     </section>
