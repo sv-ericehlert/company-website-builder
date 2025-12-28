@@ -73,7 +73,7 @@ const Locations = () => {
         </div>
 
         {/* Cities Grid */}
-        <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-5xl mx-auto min-h-[280px]">
           {locations[activeRegion as keyof typeof locations].map((location, index) => (
             <div
               key={location.city}
