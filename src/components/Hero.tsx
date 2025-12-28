@@ -61,8 +61,7 @@ const Hero = () => {
               <p className="text-sm text-muted-foreground">Professionals</p>
             </div>
             <div className="text-center">
-              <div className="flex items-center justify-center gap-2 text-foreground mb-1">
-                <MapPin className="w-5 h-5" />
+              <div className="flex items-center justify-center text-foreground mb-1">
                 <span className="font-display text-3xl font-bold">7</span>
               </div>
               <p className="text-sm text-muted-foreground">Cities</p>
