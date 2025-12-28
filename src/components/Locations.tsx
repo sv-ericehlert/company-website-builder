@@ -20,7 +20,7 @@ const Locations = () => {
   return (
     <section id="locations" className="py-24 relative overflow-hidden">
       {/* Background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 blur-3xl" />
       
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
@@ -40,7 +40,7 @@ const Locations = () => {
             <button
               key={region}
               onClick={() => setActiveRegion(region)}
-              className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
+              className={`px-6 py-3 font-medium transition-all duration-300 ${
                 activeRegion === region
                   ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30"
                   : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
@@ -56,14 +56,14 @@ const Locations = () => {
           {locations[activeRegion as keyof typeof locations].map((location, index) => (
             <div
               key={location.city}
-              className="group p-6 rounded-2xl bg-card border border-border/50 card-glow text-center animate-scale-in"
+              className="group p-6 bg-card border border-border/50 card-glow text-center animate-scale-in"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <h3 className="font-display text-2xl font-bold mb-1 group-hover:text-muted-foreground transition-colors">
                 {location.city}
               </h3>
               <p className="text-muted-foreground text-sm mb-3">{location.country}</p>
-              <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-foreground/10 text-foreground text-sm font-medium">
+              <div className="inline-flex items-center gap-1 px-3 py-1 bg-foreground/10 text-foreground text-sm font-medium">
                 {location.venues} venues
               </div>
             </div>
