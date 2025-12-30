@@ -35,9 +35,11 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex flex-1 items-center justify-end gap-3 -mr-12">
-            <Button variant="ghost" size="sm">
-              Sign In
-            </Button>
+            <Link to="/auth">
+              <Button variant="ghost" size="sm">
+                Sign In
+              </Button>
+            </Link>
             <Link to="/membership">
               <Button variant="default" size="sm">
                 Apply for Membership
@@ -70,9 +72,11 @@ const Navbar = () => {
                 </a>
               ))}
               <div className="flex gap-3 pt-4 border-t border-border/50">
-                <Button variant="ghost" className="flex-1">
-                  Sign In
-                </Button>
+                <Link to="/auth" className="flex-1">
+                  <Button variant="ghost" className="w-full">
+                    Sign In
+                  </Button>
+                </Link>
                 <Link to="/membership" className="flex-1">
                   <Button variant="default" className="w-full">
                     Apply for Membership
