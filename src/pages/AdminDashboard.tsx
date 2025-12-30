@@ -41,6 +41,7 @@ const AdminDashboard = () => {
   const [selectedApp, setSelectedApp] = useState<Application | null>(null);
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [user, setUser] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -48,6 +49,10 @@ const AdminDashboard = () => {
         setUser(session?.user ?? null);
         if (!session?.user) {
           navigate("/auth");
+        } else {
+          setTimeout(() => {
+            checkAdminAccess(session.user.id);
+          }, 0);
         }
       }
     );
@@ -56,17 +61,41 @@ const AdminDashboard = () => {
       setUser(session?.user ?? null);
       if (!session?.user) {
         navigate("/auth");
+      } else {
+        checkAdminAccess(session.user.id);
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  useEffect(() => {
-    if (user) {
+  const checkAdminAccess = async (userId: string) => {
+    try {
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .maybeSingle();
+      
+      if (!roleData) {
+        toast({
+          title: "Access Denied",
+          description: "You don't have permission to access this page.",
+          variant: "destructive",
+        });
+        navigate("/dashboard");
+        return;
+      }
+      
+      setIsAdmin(true);
       fetchApplications();
+    } catch (error: any) {
+      console.error('Error checking admin access:', error);
+      navigate("/dashboard");
     }
-  }, [user]);
+  };
+
 
   const fetchApplications = async () => {
     try {
