@@ -116,9 +116,9 @@ const MembershipQuestionnaire = () => {
       case 2:
         return selectedProfessions.length > 0;
       case 3:
-        return countWords(introduction) >= 100;
+        return introduction.trim().length >= 200;
       case 4:
-        return countWords(industryExperience) >= 200;
+        return industryExperience.trim().length >= 200;
       case 5:
         return photo !== null;
       case 6:
@@ -252,7 +252,7 @@ const MembershipQuestionnaire = () => {
           <div className="space-y-6 animate-fade-in">
             <div className="text-center mb-8">
               <h2 className="font-display text-3xl font-bold mb-2">Introduce Yourself</h2>
-              <p className="text-muted-foreground">We'd like to get to know you (min 100 words)</p>
+              <p className="text-muted-foreground">We'd like to get to know you (min 200 characters)</p>
             </div>
             
             <div className="space-y-2">
@@ -264,9 +264,9 @@ const MembershipQuestionnaire = () => {
               />
               <p className={cn(
                 "text-sm text-right",
-                countWords(introduction) >= 100 ? "text-primary" : "text-muted-foreground"
+                introduction.trim().length >= 200 ? "text-primary" : "text-muted-foreground"
               )}>
-                {countWords(introduction)} / 100 words minimum
+                {introduction.trim().length} / 200 characters minimum
               </p>
             </div>
           </div>
@@ -277,7 +277,7 @@ const MembershipQuestionnaire = () => {
           <div className="space-y-6 animate-fade-in">
             <div className="text-center mb-8">
               <h2 className="font-display text-3xl font-bold mb-2">Industry Experience</h2>
-              <p className="text-muted-foreground">Describe your work in the music industry (min 200 words)</p>
+              <p className="text-muted-foreground">Describe your work in the music industry (min 200 characters)</p>
             </div>
             
             <div className="space-y-2">
@@ -289,9 +289,9 @@ const MembershipQuestionnaire = () => {
               />
               <p className={cn(
                 "text-sm text-right",
-                countWords(industryExperience) >= 200 ? "text-primary" : "text-muted-foreground"
+                industryExperience.trim().length >= 200 ? "text-primary" : "text-muted-foreground"
               )}>
-                {countWords(industryExperience)} / 200 words minimum
+                {industryExperience.trim().length} / 200 characters minimum
               </p>
             </div>
           </div>
