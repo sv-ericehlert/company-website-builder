@@ -35,16 +35,12 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex flex-1 items-center justify-end gap-3 -mr-12">
-            <Link to="/auth">
-              <Button variant="ghost" size="sm">
-                Sign In
-              </Button>
-            </Link>
-            <Link to="/membership">
-              <Button variant="default" size="sm">
-                Apply for Membership
-              </Button>
-            </Link>
+            <Button asChild variant="ghost" size="sm">
+              <Link to="/auth">Sign In</Link>
+            </Button>
+            <Button asChild variant="default" size="sm">
+              <Link to="/membership">Apply for Membership</Link>
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -72,16 +68,16 @@ const Navbar = () => {
                 </a>
               ))}
               <div className="flex gap-3 pt-4 border-t border-border/50">
-                <Link to="/auth" className="flex-1">
-                  <Button variant="ghost" className="w-full">
+                <Button asChild variant="ghost" className="w-full flex-1">
+                  <Link to="/auth" onClick={() => setIsOpen(false)}>
                     Sign In
-                  </Button>
-                </Link>
-                <Link to="/membership" className="flex-1">
-                  <Button variant="default" className="w-full">
+                  </Link>
+                </Button>
+                <Button asChild variant="default" className="w-full flex-1">
+                  <Link to="/membership" onClick={() => setIsOpen(false)}>
                     Apply for Membership
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>
