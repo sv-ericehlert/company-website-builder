@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Membership from "./pages/Membership";
 import MembershipQuestionnaire from "./pages/MembershipQuestionnaire";
 import Auth from "./pages/Auth";
+import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,6 +21,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/membership" element={<Membership />} />
           <Route path="/membership/questionnaire" element={<MembershipQuestionnaire />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

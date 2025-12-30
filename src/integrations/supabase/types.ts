@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      membership_applications: {
+        Row: {
+          birthday: string | null
+          created_at: string
+          current_location: string | null
+          email: string
+          first_name: string
+          id: string
+          industry_experience: string | null
+          instagram: string | null
+          introduction: string | null
+          last_name: string
+          linkedin: string | null
+          origin: string | null
+          phone: string | null
+          photo_url: string | null
+          professions: string[] | null
+          referrals: string[] | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          birthday?: string | null
+          created_at?: string
+          current_location?: string | null
+          email: string
+          first_name: string
+          id?: string
+          industry_experience?: string | null
+          instagram?: string | null
+          introduction?: string | null
+          last_name: string
+          linkedin?: string | null
+          origin?: string | null
+          phone?: string | null
+          photo_url?: string | null
+          professions?: string[] | null
+          referrals?: string[] | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          birthday?: string | null
+          created_at?: string
+          current_location?: string | null
+          email?: string
+          first_name?: string
+          id?: string
+          industry_experience?: string | null
+          instagram?: string | null
+          introduction?: string | null
+          last_name?: string
+          linkedin?: string | null
+          origin?: string | null
+          phone?: string | null
+          photo_url?: string | null
+          professions?: string[] | null
+          referrals?: string[] | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Logo from "@/components/Logo";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 const professionOptions = [
   "DJ",
@@ -144,12 +145,49 @@ const MembershipQuestionnaire = () => {
     }
   };
 
-  const handleSubmit = () => {
-    toast({
-      title: "Application Submitted!",
-      description: "We'll review your application and get back to you soon.",
-    });
-    navigate("/");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!userData) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      const { error } = await supabase
+        .from('membership_applications')
+        .insert({
+          first_name: userData.firstName,
+          last_name: userData.lastName,
+          email: userData.email,
+          birthday: birthday || null,
+          phone,
+          current_location: currentLocation,
+          origin,
+          professions: selectedProfessions,
+          introduction,
+          industry_experience: industryExperience,
+          instagram,
+          linkedin: linkedin || null,
+          referrals: referrals.length > 0 ? referrals : null,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Application Submitted!",
+        description: "We'll review your application and get back to you soon.",
+      });
+      navigate("/");
+    } catch (error: any) {
+      console.error('Error submitting application:', error);
+      toast({
+        title: "Submission Failed",
+        description: error.message || "Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!userData) return null;
@@ -516,11 +554,11 @@ const MembershipQuestionnaire = () => {
                 variant="hero" 
                 size="lg" 
                 onClick={handleSubmit}
-                disabled={!isStepValid()}
+                disabled={!isStepValid() || isSubmitting}
                 className="flex-1 group"
               >
-                Submit Application
-                <Check className="w-4 h-4" />
+                {isSubmitting ? "Submitting..." : "Submit Application"}
+                {!isSubmitting && <Check className="w-4 h-4" />}
               </Button>
             )}
           </div>
