@@ -52,7 +52,7 @@ const Features = () => {
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
-            A Central Place to Connect
+            Connecting Venues, Artists & Production Crews
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Whether you're looking for your next gig or building your dream team,
