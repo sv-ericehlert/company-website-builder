@@ -11,6 +11,7 @@ const Dashboard = () => {
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,7 +22,7 @@ const Dashboard = () => {
           navigate("/auth");
         } else {
           setTimeout(() => {
-            fetchProfile(session.user.id);
+            fetchUserData(session.user.id);
           }, 0);
         }
       }
@@ -32,25 +33,35 @@ const Dashboard = () => {
       if (!session?.user) {
         navigate("/auth");
       } else {
-        fetchProfile(session.user.id);
+        fetchUserData(session.user.id);
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchUserData = async (userId: string) => {
     try {
-      const { data, error } = await supabase
+      // Fetch profile
+      const { data: profileData } = await supabase
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
         .maybeSingle();
+      
+      setProfile(profileData);
 
-      if (error) throw error;
-      setProfile(data);
+      // Check if user is admin
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .maybeSingle();
+      
+      setIsAdmin(!!roleData);
     } catch (error: any) {
-      console.error('Error fetching profile:', error);
+      console.error('Error fetching user data:', error);
     } finally {
       setLoading(false);
     }
@@ -112,17 +123,19 @@ const Dashboard = () => {
 
           {/* Quick Actions */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-            <Link to="/admin" className="block">
-              <div className="bg-card/50 border border-border/50 rounded-xl p-6 hover:border-primary/50 transition-colors group">
-                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                  <Briefcase className="w-6 h-6 text-primary" />
+            {isAdmin && (
+              <Link to="/admin" className="block">
+                <div className="bg-card/50 border border-border/50 rounded-xl p-6 hover:border-primary/50 transition-colors group">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                    <Briefcase className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="font-display text-lg font-semibold mb-1">Review Applications</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Manage membership requests
+                  </p>
                 </div>
-                <h3 className="font-display text-lg font-semibold mb-1">Review Applications</h3>
-                <p className="text-sm text-muted-foreground">
-                  Manage membership requests
-                </p>
-              </div>
-            </Link>
+              </Link>
+            )}
 
             <div className="bg-card/50 border border-border/50 rounded-xl p-6 opacity-60">
               <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
