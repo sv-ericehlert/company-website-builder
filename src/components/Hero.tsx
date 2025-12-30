@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-dj-set.png";
 import { ArrowRight, Users, Globe, Zap } from "lucide-react";
@@ -34,10 +35,12 @@ const Hero = () => {
 
           {/* CTA */}
           <div className="flex justify-center mb-16 opacity-0 animate-slide-up animation-delay-300">
-            <Button variant="hero" size="xl" className="group">
-              Apply for Membership
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <Link to="/membership">
+              <Button variant="hero" size="xl" className="group">
+                Apply for Membership
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
           </div>
 
           {/* Stats */}
