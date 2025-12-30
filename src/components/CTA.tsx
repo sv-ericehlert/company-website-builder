@@ -28,20 +28,6 @@ const CTA = () => {
               Learn More
             </Button>
           </div>
-
-          {/* Trust Indicators */}
-          <div className="mt-16 pt-16 border-t border-border/50">
-            <p className="text-sm text-muted-foreground mb-6">
-              Trusted by professionals at
-            </p>
-            <div className="flex flex-wrap justify-center gap-8 text-muted-foreground/60">
-              {["Live Nation", "AEG", "Insomniac", "Ultra", "Tomorrowland", "EDC"].map((brand) => (
-                <span key={brand} className="font-display text-lg font-bold">
-                  {brand}
-                </span>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </section>
