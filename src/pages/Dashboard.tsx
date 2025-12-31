@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, User, Calendar, MapPin, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Logo from "@/components/Logo";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -85,6 +86,16 @@ const Dashboard = () => {
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Logo />
+          
+          <Tabs defaultValue="home" className="hidden md:block">
+            <TabsList className="bg-muted/50">
+              <TabsTrigger value="home">Home</TabsTrigger>
+              <TabsTrigger value="events">Events</TabsTrigger>
+              <TabsTrigger value="members">Members</TabsTrigger>
+              <TabsTrigger value="opportunities">Opportunities</TabsTrigger>
+            </TabsList>
+          </Tabs>
+
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground hidden sm:block">
               {user?.email}
