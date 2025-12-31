@@ -1,6 +1,6 @@
 import { useRef, useState, useMemo, Suspense, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Sphere, Html, Line, Text } from "@react-three/drei";
+import { OrbitControls, Sphere, Html, Line, Text, Billboard } from "@react-three/drei";
 import * as THREE from "three";
 
 interface City {
@@ -284,21 +284,30 @@ const getCountryLabels = (radius: number) => {
 };
 
 const CountryLabel = ({ country, position }: { country: string; position: THREE.Vector3 }) => {
-  // Calculate the normal direction from the center of the globe to position the text facing outward
+  // Position the label slightly above the globe surface
   const normal = position.clone().normalize();
-  const labelPosition = position.clone().add(normal.clone().multiplyScalar(0.06));
+  const labelPosition = position.clone().add(normal.clone().multiplyScalar(0.08));
   
   return (
-    <Text
+    <Billboard
+      follow={true}
+      lockX={false}
+      lockY={false}
+      lockZ={false}
       position={[labelPosition.x, labelPosition.y, labelPosition.z]}
-      fontSize={0.04}
-      color="#666666"
-      anchorX="center"
-      anchorY="middle"
-      letterSpacing={0.15}
     >
-      {country.toUpperCase()}
-    </Text>
+      <Text
+        fontSize={0.05}
+        color="#888888"
+        anchorX="center"
+        anchorY="middle"
+        letterSpacing={0.1}
+        outlineWidth={0.003}
+        outlineColor="#000000"
+      >
+        {country.toUpperCase()}
+      </Text>
+    </Billboard>
   );
 };
 
