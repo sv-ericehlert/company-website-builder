@@ -131,42 +131,52 @@ const CityMarker = ({ city, radius, onSelect, isSelected }: CityMarkerProps) => 
 const GlobeMesh = ({ onSelectCity, selectedCity }: { onSelectCity: (city: City) => void; selectedCity: City | null }) => {
   const globeRef = useRef<THREE.Group>(null);
   
-  // Use a world map texture with country outlines
-  const texture = useTexture('https://unpkg.com/three-globe@2.31.3/example/img/earth-dark.jpg');
+  // Use NASA night lights for a subtle land mass reference + clear boundaries
+  const nightTexture = useTexture('https://unpkg.com/three-globe@2.31.3/example/img/earth-night.jpg');
+  const bordersTexture = useTexture('https://unpkg.com/three-globe@2.31.3/example/img/earth-water.png');
   
-  // Create an outline-only texture overlay
-  const outlineTexture = useMemo(() => {
-    const loader = new THREE.TextureLoader();
-    const tex = loader.load('https://unpkg.com/three-globe@2.31.3/example/img/earth-topology.png');
-    return tex;
-  }, []);
-
   const radius = 1.5;
 
   return (
     <group ref={globeRef}>
-      {/* Main globe with dark base */}
+      {/* Dark base globe */}
       <Sphere args={[radius, 64, 64]}>
         <meshStandardMaterial 
-          map={texture}
-          transparent
-          opacity={0.3}
+          color="#08080c"
+          roughness={1}
+          metalness={0}
         />
       </Sphere>
       
-      {/* Country outlines overlay */}
+      {/* Night lights showing land masses subtly */}
       <Sphere args={[radius * 1.001, 64, 64]}>
         <meshBasicMaterial 
-          map={outlineTexture}
+          map={nightTexture}
           transparent
-          opacity={0.6}
+          opacity={0.4}
           blending={THREE.AdditiveBlending}
         />
       </Sphere>
       
+      {/* Water/land boundary for clear outlines */}
+      <Sphere args={[radius * 1.002, 64, 64]}>
+        <meshBasicMaterial 
+          map={bordersTexture}
+          transparent
+          opacity={0.5}
+          blending={THREE.AdditiveBlending}
+        />
+      </Sphere>
+      
+      {/* Wireframe grid for extra definition */}
+      <lineSegments>
+        <edgesGeometry args={[new THREE.IcosahedronGeometry(radius * 1.003, 2)]} />
+        <lineBasicMaterial color="#ffffff" transparent opacity={0.08} />
+      </lineSegments>
+      
       {/* Outer glow */}
-      <Sphere args={[radius * 1.02, 64, 64]}>
-        <meshBasicMaterial color="#ffffff" transparent opacity={0.03} side={THREE.BackSide} />
+      <Sphere args={[radius * 1.03, 64, 64]}>
+        <meshBasicMaterial color="#3366ff" transparent opacity={0.03} side={THREE.BackSide} />
       </Sphere>
       
       {/* City markers */}
