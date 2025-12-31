@@ -265,6 +265,12 @@ const USStatesBoundaries = ({ radius }: { radius: number }) => {
 const getCountryLabels = (radius: number) => {
   const countryGroups: { [key: string]: { lats: number[], lngs: number[] } } = {};
   
+  // Custom offsets for countries with overlapping labels (lat, lng)
+  const labelOffsets: { [key: string]: { lat: number, lng: number } } = {
+    "Netherlands": { lat: 4, lng: 0 },
+    "Denmark": { lat: 2, lng: 0 },
+  };
+  
   cities.forEach(city => {
     if (!countryGroups[city.country]) {
       countryGroups[city.country] = { lats: [], lngs: [] };
@@ -274,8 +280,9 @@ const getCountryLabels = (radius: number) => {
   });
   
   return Object.entries(countryGroups).map(([country, coords]) => {
-    const avgLat = coords.lats.reduce((a, b) => a + b, 0) / coords.lats.length;
-    const avgLng = coords.lngs.reduce((a, b) => a + b, 0) / coords.lngs.length;
+    const offset = labelOffsets[country] || { lat: 0, lng: 0 };
+    const avgLat = coords.lats.reduce((a, b) => a + b, 0) / coords.lats.length + offset.lat;
+    const avgLng = coords.lngs.reduce((a, b) => a + b, 0) / coords.lngs.length + offset.lng;
     return {
       country,
       position: latLngToVector3(avgLat, avgLng, radius * 1.01)
