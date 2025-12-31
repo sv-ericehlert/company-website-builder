@@ -91,10 +91,10 @@ const Dashboard = () => {
             
             <TabsList className="bg-muted/50 hidden md:flex">
               <TabsTrigger value="home">Home</TabsTrigger>
-              <TabsTrigger value="members">Members</TabsTrigger>
               <TabsTrigger value="opportunities">Opportunities</TabsTrigger>
               <TabsTrigger value="locations">Locations</TabsTrigger>
               <TabsTrigger value="map">Map</TabsTrigger>
+              <TabsTrigger value="members">Members</TabsTrigger>
             </TabsList>
 
             <div className="flex items-center gap-4">
