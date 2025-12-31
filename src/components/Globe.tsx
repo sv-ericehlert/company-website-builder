@@ -1,6 +1,6 @@
 import { useRef, useState, useMemo, Suspense, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Sphere, Html, Line } from "@react-three/drei";
+import { OrbitControls, Sphere, Html, Line, Text } from "@react-three/drei";
 import * as THREE from "three";
 
 interface City {
@@ -284,16 +284,22 @@ const getCountryLabels = (radius: number) => {
 };
 
 const CountryLabel = ({ country, position }: { country: string; position: THREE.Vector3 }) => {
+  // Calculate the normal direction from the center of the globe to position the text facing outward
+  const normal = position.clone().normalize();
+  const labelPosition = position.clone().add(normal.clone().multiplyScalar(0.06));
+  
   return (
-    <Html
-      position={[position.x, position.y + 0.08, position.z]}
-      center
-      style={{ pointerEvents: 'none' }}
+    <Text
+      position={[labelPosition.x, labelPosition.y, labelPosition.z]}
+      fontSize={0.04}
+      color="#666666"
+      anchorX="center"
+      anchorY="middle"
+      letterSpacing={0.15}
+      font="/fonts/inter-regular.woff"
     >
-      <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-light whitespace-nowrap">
-        {country}
-      </p>
-    </Html>
+      {country.toUpperCase()}
+    </Text>
   );
 };
 
