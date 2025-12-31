@@ -297,12 +297,12 @@ const CountryLabel = ({ country, position }: { country: string; position: THREE.
       position={[labelPosition.x, labelPosition.y, labelPosition.z]}
     >
       <Text
-        fontSize={0.028}
-        color="#999999"
+        fontSize={0.018}
+        color="#aaaaaa"
         anchorX="center"
         anchorY="middle"
-        letterSpacing={0.08}
-        outlineWidth={0.002}
+        letterSpacing={0.05}
+        outlineWidth={0.001}
         outlineColor="#000000"
       >
         {country.toUpperCase()}
