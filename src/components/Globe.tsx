@@ -1,6 +1,6 @@
-import { useRef, useState, useMemo, Suspense } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Sphere, Html } from "@react-three/drei";
+import { useRef, useState, useMemo, Suspense, useEffect } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, Sphere, Html, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 
 interface City {
@@ -131,65 +131,42 @@ const CityMarker = ({ city, radius, onSelect, isSelected }: CityMarkerProps) => 
 const GlobeMesh = ({ onSelectCity, selectedCity }: { onSelectCity: (city: City) => void; selectedCity: City | null }) => {
   const globeRef = useRef<THREE.Group>(null);
   
-  useFrame(() => {
-    if (globeRef.current) {
-      globeRef.current.rotation.y += 0.001;
-    }
-  });
-
-  // Create globe texture with grid lines
-  const globeMaterial = useMemo(() => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1024;
-    canvas.height = 512;
-    const ctx = canvas.getContext('2d')!;
-    
-    // Dark background
-    ctx.fillStyle = '#0a0a0f';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Grid lines
-    ctx.strokeStyle = 'rgba(255, 69, 0, 0.15)';
-    ctx.lineWidth = 1;
-    
-    // Latitude lines
-    for (let lat = -80; lat <= 80; lat += 20) {
-      const y = ((90 - lat) / 180) * canvas.height;
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(canvas.width, y);
-      ctx.stroke();
-    }
-    
-    // Longitude lines
-    for (let lng = -180; lng <= 180; lng += 30) {
-      const x = ((lng + 180) / 360) * canvas.width;
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, canvas.height);
-      ctx.stroke();
-    }
-    
-    const texture = new THREE.CanvasTexture(canvas);
-    return new THREE.MeshStandardMaterial({
-      map: texture,
-      transparent: true,
-      opacity: 0.9,
-    });
+  // Use a world map texture with country outlines
+  const texture = useTexture('https://unpkg.com/three-globe@2.31.3/example/img/earth-dark.jpg');
+  
+  // Create an outline-only texture overlay
+  const outlineTexture = useMemo(() => {
+    const loader = new THREE.TextureLoader();
+    const tex = loader.load('https://unpkg.com/three-globe@2.31.3/example/img/earth-topology.png');
+    return tex;
   }, []);
 
   const radius = 1.5;
 
   return (
     <group ref={globeRef}>
-      {/* Main globe */}
+      {/* Main globe with dark base */}
       <Sphere args={[radius, 64, 64]}>
-        <primitive object={globeMaterial} attach="material" />
+        <meshStandardMaterial 
+          map={texture}
+          transparent
+          opacity={0.3}
+        />
+      </Sphere>
+      
+      {/* Country outlines overlay */}
+      <Sphere args={[radius * 1.001, 64, 64]}>
+        <meshBasicMaterial 
+          map={outlineTexture}
+          transparent
+          opacity={0.6}
+          blending={THREE.AdditiveBlending}
+        />
       </Sphere>
       
       {/* Outer glow */}
-      <Sphere args={[radius * 1.01, 64, 64]}>
-        <meshBasicMaterial color="#ff4500" transparent opacity={0.05} side={THREE.BackSide} />
+      <Sphere args={[radius * 1.02, 64, 64]}>
+        <meshBasicMaterial color="#ffffff" transparent opacity={0.03} side={THREE.BackSide} />
       </Sphere>
       
       {/* City markers */}
