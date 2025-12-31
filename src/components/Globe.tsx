@@ -1,6 +1,6 @@
 import { useRef, useState, useMemo, Suspense, useEffect } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Sphere, Html, useTexture } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { OrbitControls, Sphere, Html, Line } from "@react-three/drei";
 import * as THREE from "three";
 
 interface City {
@@ -102,25 +102,33 @@ const CityMarker = ({ city, radius, onSelect, isSelected }: CityMarkerProps) => 
           document.body.style.cursor = 'auto';
         }}
       >
-        <sphereGeometry args={[0.025, 16, 16]} />
-        <meshStandardMaterial 
+        <sphereGeometry args={[0.03, 16, 16]} />
+        <meshBasicMaterial 
           color={isSelected ? "#ff6b35" : hovered ? "#ffa07a" : "#ff4500"} 
-          emissive={isSelected ? "#ff6b35" : hovered ? "#ff4500" : "#ff2200"}
-          emissiveIntensity={isSelected ? 0.8 : hovered ? 0.6 : 0.3}
+        />
+      </mesh>
+      {/* Glow ring */}
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[0.035, 0.05, 32]} />
+        <meshBasicMaterial 
+          color="#ff4500" 
+          transparent 
+          opacity={hovered || isSelected ? 0.8 : 0.4}
+          side={THREE.DoubleSide}
         />
       </mesh>
       {(hovered || isSelected) && (
         <Html
-          position={[0, 0.06, 0]}
+          position={[0, 0.08, 0]}
           center
           style={{
             pointerEvents: 'none',
             whiteSpace: 'nowrap',
           }}
         >
-          <div className="bg-background/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border shadow-lg">
-            <p className="text-sm font-semibold text-foreground">{city.name}</p>
-            <p className="text-xs text-muted-foreground">{city.country}</p>
+          <div className="bg-black/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-white/20 shadow-lg">
+            <p className="text-sm font-semibold text-white">{city.name}</p>
+            <p className="text-xs text-white/70">{city.country}</p>
           </div>
         </Html>
       )}
@@ -128,55 +136,155 @@ const CityMarker = ({ city, radius, onSelect, isSelected }: CityMarkerProps) => 
   );
 };
 
+// Country boundary lines component using GeoJSON
+const CountryBoundaries = ({ radius }: { radius: number }) => {
+  const [geoData, setGeoData] = useState<any>(null);
+  
+  useEffect(() => {
+    // Load world countries GeoJSON with state/province boundaries
+    fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
+      .then(res => res.json())
+      .then(data => setGeoData(data))
+      .catch(err => console.error('Failed to load geo data:', err));
+  }, []);
+
+  const lines = useMemo(() => {
+    if (!geoData) return [];
+    
+    const allLines: THREE.Vector3[][] = [];
+    
+    geoData.features.forEach((feature: any) => {
+      const processCoordinates = (coords: number[][]) => {
+        const points: THREE.Vector3[] = [];
+        for (let i = 0; i < coords.length; i += 2) { // Sample every 2nd point for performance
+          const [lng, lat] = coords[i];
+          points.push(latLngToVector3(lat, lng, radius * 1.002));
+        }
+        if (points.length > 2) {
+          allLines.push(points);
+        }
+      };
+      
+      if (feature.geometry.type === 'Polygon') {
+        feature.geometry.coordinates.forEach((ring: number[][]) => {
+          processCoordinates(ring);
+        });
+      } else if (feature.geometry.type === 'MultiPolygon') {
+        feature.geometry.coordinates.forEach((polygon: number[][][]) => {
+          polygon.forEach((ring: number[][]) => {
+            processCoordinates(ring);
+          });
+        });
+      }
+    });
+    
+    return allLines;
+  }, [geoData, radius]);
+
+  if (!geoData) return null;
+
+  return (
+    <group>
+      {lines.map((points, i) => (
+        <Line
+          key={i}
+          points={points}
+          color="#ffffff"
+          lineWidth={1}
+          transparent
+          opacity={0.7}
+        />
+      ))}
+    </group>
+  );
+};
+
+// US States boundaries
+const USStatesBoundaries = ({ radius }: { radius: number }) => {
+  const [statesData, setStatesData] = useState<any>(null);
+  
+  useEffect(() => {
+    fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json')
+      .then(res => res.json())
+      .then(data => setStatesData(data))
+      .catch(err => console.error('Failed to load US states:', err));
+  }, []);
+
+  const lines = useMemo(() => {
+    if (!statesData) return [];
+    
+    const allLines: THREE.Vector3[][] = [];
+    
+    statesData.features.forEach((feature: any) => {
+      const processCoordinates = (coords: number[][]) => {
+        const points: THREE.Vector3[] = [];
+        for (let i = 0; i < coords.length; i += 1) {
+          const [lng, lat] = coords[i];
+          points.push(latLngToVector3(lat, lng, radius * 1.003));
+        }
+        if (points.length > 2) {
+          allLines.push(points);
+        }
+      };
+      
+      if (feature.geometry.type === 'Polygon') {
+        feature.geometry.coordinates.forEach((ring: number[][]) => {
+          processCoordinates(ring);
+        });
+      } else if (feature.geometry.type === 'MultiPolygon') {
+        feature.geometry.coordinates.forEach((polygon: number[][][]) => {
+          polygon.forEach((ring: number[][]) => {
+            processCoordinates(ring);
+          });
+        });
+      }
+    });
+    
+    return allLines;
+  }, [statesData, radius]);
+
+  if (!statesData) return null;
+
+  return (
+    <group>
+      {lines.map((points, i) => (
+        <Line
+          key={i}
+          points={points}
+          color="#ffffff"
+          lineWidth={0.8}
+          transparent
+          opacity={0.5}
+        />
+      ))}
+    </group>
+  );
+};
+
 const GlobeMesh = ({ onSelectCity, selectedCity }: { onSelectCity: (city: City) => void; selectedCity: City | null }) => {
-  const globeRef = useRef<THREE.Group>(null);
-  
-  // Use NASA night lights for a subtle land mass reference + clear boundaries
-  const nightTexture = useTexture('https://unpkg.com/three-globe@2.31.3/example/img/earth-night.jpg');
-  const bordersTexture = useTexture('https://unpkg.com/three-globe@2.31.3/example/img/earth-water.png');
-  
   const radius = 1.5;
 
   return (
-    <group ref={globeRef}>
-      {/* Dark base globe */}
-      <Sphere args={[radius, 64, 64]}>
-        <meshStandardMaterial 
-          color="#08080c"
-          roughness={1}
-          metalness={0}
-        />
+    <group>
+      {/* Pure black base globe */}
+      <Sphere args={[radius, 128, 128]}>
+        <meshBasicMaterial color="#000000" />
       </Sphere>
       
-      {/* Night lights showing land masses subtly */}
-      <Sphere args={[radius * 1.001, 64, 64]}>
+      {/* Country boundaries - white lines */}
+      <CountryBoundaries radius={radius} />
+      
+      {/* US State boundaries */}
+      <USStatesBoundaries radius={radius} />
+      
+      {/* Subtle latitude/longitude grid */}
+      <Sphere args={[radius * 1.001, 24, 12]}>
         <meshBasicMaterial 
-          map={nightTexture}
+          color="#ffffff"
+          wireframe
           transparent
-          opacity={0.4}
-          blending={THREE.AdditiveBlending}
+          opacity={0.05}
         />
-      </Sphere>
-      
-      {/* Water/land boundary for clear outlines */}
-      <Sphere args={[radius * 1.002, 64, 64]}>
-        <meshBasicMaterial 
-          map={bordersTexture}
-          transparent
-          opacity={0.5}
-          blending={THREE.AdditiveBlending}
-        />
-      </Sphere>
-      
-      {/* Wireframe grid for extra definition */}
-      <lineSegments>
-        <edgesGeometry args={[new THREE.IcosahedronGeometry(radius * 1.003, 2)]} />
-        <lineBasicMaterial color="#ffffff" transparent opacity={0.08} />
-      </lineSegments>
-      
-      {/* Outer glow */}
-      <Sphere args={[radius * 1.03, 64, 64]}>
-        <meshBasicMaterial color="#3366ff" transparent opacity={0.03} side={THREE.BackSide} />
       </Sphere>
       
       {/* City markers */}
@@ -206,14 +314,13 @@ const Globe = ({ onCitySelect }: GlobeProps) => {
   };
 
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relative bg-black">
       <Canvas
         camera={{ position: [0, 0, 4], fov: 45 }}
-        style={{ background: 'transparent' }}
+        style={{ background: '#000000' }}
       >
-        <ambientLight intensity={0.3} />
-        <pointLight position={[10, 10, 10]} intensity={1} />
-        <pointLight position={[-10, -10, -10]} intensity={0.3} color="#ff4500" />
+        <ambientLight intensity={0.5} />
+        <pointLight position={[10, 10, 10]} intensity={0.5} />
         
         <Suspense fallback={null}>
           <GlobeMesh onSelectCity={handleCitySelect} selectedCity={selectedCity} />
@@ -224,24 +331,23 @@ const Globe = ({ onCitySelect }: GlobeProps) => {
           enablePan={false}
           minDistance={2.5}
           maxDistance={6}
-          autoRotate={false}
           rotateSpeed={0.5}
         />
       </Canvas>
       
       {/* Selected city panel */}
       {selectedCity && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-md border border-border rounded-xl p-4 shadow-xl animate-fade-in">
-          <h3 className="font-display text-xl font-bold text-foreground">{selectedCity.name}</h3>
-          <p className="text-muted-foreground">{selectedCity.country}</p>
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/90 backdrop-blur-md border border-white/20 rounded-xl p-4 shadow-xl animate-fade-in">
+          <h3 className="font-display text-xl font-bold text-white">{selectedCity.name}</h3>
+          <p className="text-white/70">{selectedCity.country}</p>
           <p className="text-xs text-primary mt-1">{selectedCity.region}</p>
         </div>
       )}
       
       {/* Legend */}
-      <div className="absolute top-4 right-4 bg-card/80 backdrop-blur-sm border border-border rounded-lg p-3">
-        <p className="text-xs text-muted-foreground mb-2">Click a city to explore</p>
-        <p className="text-xs text-foreground font-medium">{cities.length} locations worldwide</p>
+      <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-sm border border-white/10 rounded-lg p-3">
+        <p className="text-xs text-white/60 mb-2">Click a city to explore</p>
+        <p className="text-xs text-white font-medium">{cities.length} locations worldwide</p>
       </div>
     </div>
   );
