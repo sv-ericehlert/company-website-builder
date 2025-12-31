@@ -261,8 +261,45 @@ const USStatesBoundaries = ({ radius }: { radius: number }) => {
   );
 };
 
+// Get unique countries that have city markers and calculate their center position
+const getCountryLabels = (radius: number) => {
+  const countryGroups: { [key: string]: { lats: number[], lngs: number[] } } = {};
+  
+  cities.forEach(city => {
+    if (!countryGroups[city.country]) {
+      countryGroups[city.country] = { lats: [], lngs: [] };
+    }
+    countryGroups[city.country].lats.push(city.lat);
+    countryGroups[city.country].lngs.push(city.lng);
+  });
+  
+  return Object.entries(countryGroups).map(([country, coords]) => {
+    const avgLat = coords.lats.reduce((a, b) => a + b, 0) / coords.lats.length;
+    const avgLng = coords.lngs.reduce((a, b) => a + b, 0) / coords.lngs.length;
+    return {
+      country,
+      position: latLngToVector3(avgLat, avgLng, radius * 1.01)
+    };
+  });
+};
+
+const CountryLabel = ({ country, position }: { country: string; position: THREE.Vector3 }) => {
+  return (
+    <Html
+      position={[position.x, position.y + 0.08, position.z]}
+      center
+      style={{ pointerEvents: 'none' }}
+    >
+      <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-light whitespace-nowrap">
+        {country}
+      </p>
+    </Html>
+  );
+};
+
 const GlobeMesh = ({ onSelectCity, selectedCity }: { onSelectCity: (city: City) => void; selectedCity: City | null }) => {
   const radius = 1.5;
+  const countryLabels = useMemo(() => getCountryLabels(radius), [radius]);
 
   return (
     <group>
@@ -286,6 +323,11 @@ const GlobeMesh = ({ onSelectCity, selectedCity }: { onSelectCity: (city: City) 
           side={THREE.BackSide} 
         />
       </Sphere>
+      
+      {/* Country labels */}
+      {countryLabels.map(({ country, position }) => (
+        <CountryLabel key={country} country={country} position={position} />
+      ))}
       
       {/* City markers */}
       {cities.map((city) => (
