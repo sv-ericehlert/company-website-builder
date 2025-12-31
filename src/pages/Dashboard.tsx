@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { LogOut, User, Calendar, Briefcase, MapPin, Settings } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { LogOut, User, Calendar, MapPin, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +11,6 @@ const Dashboard = () => {
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -50,16 +49,6 @@ const Dashboard = () => {
         .maybeSingle();
       
       setProfile(profileData);
-
-      // Check if user is admin
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .eq('role', 'admin')
-        .maybeSingle();
-      
-      setIsAdmin(!!roleData);
     } catch (error: any) {
       console.error('Error fetching user data:', error);
     } finally {
@@ -122,21 +111,7 @@ const Dashboard = () => {
           </div>
 
           {/* Quick Actions */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-            {isAdmin && (
-              <Link to="/admin" className="block">
-                <div className="bg-card/50 border border-border/50 rounded-xl p-6 hover:border-primary/50 transition-colors group">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                    <Briefcase className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="font-display text-lg font-semibold mb-1">Review Applications</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Manage membership requests
-                  </p>
-                </div>
-              </Link>
-            )}
-
+          <div className="grid md:grid-cols-2 gap-4 mb-10">
             <div className="bg-card/50 border border-border/50 rounded-xl p-6 opacity-60">
               <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                 <Calendar className="w-6 h-6 text-primary" />
