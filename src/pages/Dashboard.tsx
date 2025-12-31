@@ -92,7 +92,6 @@ const Dashboard = () => {
             <TabsList className="bg-muted/50 hidden md:flex">
               <TabsTrigger value="home">Home</TabsTrigger>
               <TabsTrigger value="opportunities">Opportunities</TabsTrigger>
-              <TabsTrigger value="locations">Locations</TabsTrigger>
               <TabsTrigger value="map">Map</TabsTrigger>
               <TabsTrigger value="members">Members</TabsTrigger>
             </TabsList>
@@ -201,13 +200,6 @@ const Dashboard = () => {
         </TabsContent>
 
 
-        {/* Locations Tab */}
-        <TabsContent value="locations" className="pt-24 pb-12 px-4 mt-0">
-          <div className="max-w-4xl mx-auto text-center py-20">
-            <h2 className="font-display text-3xl font-bold mb-4">Locations</h2>
-            <p className="text-muted-foreground">Coming soon</p>
-          </div>
-        </TabsContent>
 
         {/* Map Tab */}
         <TabsContent value="map" className="pt-16 mt-0 h-[calc(100vh-4rem)]">
