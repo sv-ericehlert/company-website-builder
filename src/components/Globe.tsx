@@ -296,7 +296,6 @@ const CountryLabel = ({ country, position }: { country: string; position: THREE.
       anchorX="center"
       anchorY="middle"
       letterSpacing={0.15}
-      font="/fonts/inter-regular.woff"
     >
       {country.toUpperCase()}
     </Text>
