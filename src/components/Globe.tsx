@@ -86,6 +86,7 @@ const CityMarker = ({ city, radius, onSelect, isSelected }: CityMarkerProps) => 
 
   return (
     <group position={position}>
+      {/* Main dot */}
       <mesh
         ref={meshRef}
         onClick={(e) => {
@@ -102,33 +103,32 @@ const CityMarker = ({ city, radius, onSelect, isSelected }: CityMarkerProps) => 
           document.body.style.cursor = 'auto';
         }}
       >
-        <sphereGeometry args={[0.03, 16, 16]} />
+        <sphereGeometry args={[0.018, 16, 16]} />
         <meshBasicMaterial 
-          color={isSelected ? "#ff6b35" : hovered ? "#ffa07a" : "#ff4500"} 
+          color={isSelected ? "#ff5722" : hovered ? "#ff7043" : "#ff4500"} 
         />
       </mesh>
-      {/* Glow ring */}
-      <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[0.035, 0.05, 32]} />
+      {/* Subtle outer ring */}
+      <mesh>
+        <sphereGeometry args={[0.025, 16, 16]} />
         <meshBasicMaterial 
           color="#ff4500" 
           transparent 
-          opacity={hovered || isSelected ? 0.8 : 0.4}
-          side={THREE.DoubleSide}
+          opacity={hovered || isSelected ? 0.3 : 0.15}
         />
       </mesh>
       {(hovered || isSelected) && (
         <Html
-          position={[0, 0.08, 0]}
+          position={[0, 0.06, 0]}
           center
           style={{
             pointerEvents: 'none',
             whiteSpace: 'nowrap',
           }}
         >
-          <div className="bg-black/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-white/20 shadow-lg">
-            <p className="text-sm font-semibold text-white">{city.name}</p>
-            <p className="text-xs text-white/70">{city.country}</p>
+          <div className="bg-black/95 px-3 py-2 rounded border border-white/10 shadow-2xl">
+            <p className="text-sm font-medium text-white tracking-wide">{city.name}</p>
+            <p className="text-xs text-white/50">{city.country}</p>
           </div>
         </Html>
       )}
@@ -189,10 +189,10 @@ const CountryBoundaries = ({ radius }: { radius: number }) => {
         <Line
           key={i}
           points={points}
-          color="#ffffff"
-          lineWidth={1}
+          color="#e0e0e0"
+          lineWidth={0.5}
           transparent
-          opacity={0.7}
+          opacity={0.35}
         />
       ))}
     </group>
@@ -251,10 +251,10 @@ const USStatesBoundaries = ({ radius }: { radius: number }) => {
         <Line
           key={i}
           points={points}
-          color="#ffffff"
-          lineWidth={0.8}
+          color="#c0c0c0"
+          lineWidth={0.3}
           transparent
-          opacity={0.5}
+          opacity={0.2}
         />
       ))}
     </group>
@@ -266,24 +266,24 @@ const GlobeMesh = ({ onSelectCity, selectedCity }: { onSelectCity: (city: City) 
 
   return (
     <group>
-      {/* Pure black base globe */}
+      {/* Deep black base globe */}
       <Sphere args={[radius, 128, 128]}>
-        <meshBasicMaterial color="#000000" />
+        <meshBasicMaterial color="#030303" />
       </Sphere>
       
-      {/* Country boundaries - white lines */}
+      {/* Country boundaries - refined thin lines */}
       <CountryBoundaries radius={radius} />
       
-      {/* US State boundaries */}
+      {/* US State boundaries - even more subtle */}
       <USStatesBoundaries radius={radius} />
       
-      {/* Subtle latitude/longitude grid */}
-      <Sphere args={[radius * 1.001, 24, 12]}>
+      {/* Outer atmosphere glow */}
+      <Sphere args={[radius * 1.015, 64, 64]}>
         <meshBasicMaterial 
-          color="#ffffff"
-          wireframe
-          transparent
-          opacity={0.05}
+          color="#ffffff" 
+          transparent 
+          opacity={0.02} 
+          side={THREE.BackSide} 
         />
       </Sphere>
       
