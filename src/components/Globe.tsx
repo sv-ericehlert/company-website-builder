@@ -267,8 +267,8 @@ const getCountryLabels = (radius: number) => {
   
   // Custom offsets for countries with overlapping labels (lat, lng)
   const labelOffsets: { [key: string]: { lat: number, lng: number } } = {
-    "Netherlands": { lat: 4, lng: 0 },
-    "Denmark": { lat: 2, lng: 0 },
+    "Netherlands": { lat: 1.2, lng: 0 },
+    "Denmark": { lat: 1, lng: 0 },
   };
   
   cities.forEach(city => {
