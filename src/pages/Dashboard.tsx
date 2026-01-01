@@ -89,7 +89,7 @@ const Dashboard = () => {
           <div className="container mx-auto px-4 h-16 flex items-center justify-between">
             <Logo />
             
-            <TabsList className="bg-muted/50 hidden md:flex">
+            <TabsList className="bg-muted/50 flex">
               <TabsTrigger value="home">Home</TabsTrigger>
               <TabsTrigger value="opportunities">Opportunities</TabsTrigger>
               <TabsTrigger value="map">Map</TabsTrigger>
