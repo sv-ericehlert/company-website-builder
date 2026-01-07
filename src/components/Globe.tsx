@@ -2,6 +2,15 @@ import { useRef, useState, useMemo, Suspense, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Sphere, Html, Line, Text, Billboard } from "@react-three/drei";
 import * as THREE from "three";
+import { Search, MapPin, ChevronDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface City {
   name: string;
@@ -370,14 +379,61 @@ interface GlobeProps {
 
 const Globe = ({ onCitySelect }: GlobeProps) => {
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleCitySelect = (city: City) => {
     setSelectedCity(city);
     onCitySelect?.(city);
   };
 
+  const filteredCities = useMemo(() => {
+    if (!searchQuery) return cities;
+    return cities.filter(city => 
+      city.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      city.country.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery]);
+
   return (
     <div className="w-full h-full relative bg-black">
+      {/* Search bar and city dropdown - Top right */}
+      <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+        {/* Search Bar */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" />
+          <Input 
+            placeholder="Search cities..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9 h-9 w-40 sm:w-48 bg-black/70 backdrop-blur-sm border-white/20 text-white placeholder:text-white/50 focus:bg-black/80 focus:border-white/40"
+          />
+        </div>
+        
+        {/* City Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-9 px-3 bg-black/70 backdrop-blur-sm border border-white/20 hover:bg-black/80 text-white">
+              <MapPin className="w-4 h-4 mr-2 text-primary" />
+              <span className="text-sm hidden sm:inline">Cities</span>
+              <ChevronDown className="w-4 h-4 ml-1" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56 max-h-80 overflow-y-auto bg-black/95 border-white/20">
+            {filteredCities.map((city) => (
+              <DropdownMenuItem 
+                key={city.name} 
+                className="cursor-pointer text-white hover:bg-white/10 focus:bg-white/10"
+                onClick={() => handleCitySelect(city)}
+              >
+                <MapPin className="w-4 h-4 mr-2 text-primary" />
+                <span>{city.name}</span>
+                <span className="ml-auto text-xs text-white/50">{city.country}</span>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
       <Canvas
         camera={{ position: [0, 0, 4], fov: 45 }}
         style={{ background: '#000000' }}
@@ -407,9 +463,9 @@ const Globe = ({ onCitySelect }: GlobeProps) => {
         </div>
       )}
       
-      {/* Legend */}
-      <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-sm border border-white/10 rounded-lg p-3">
-        <p className="text-xs text-white/60 mb-2">Click a city to explore</p>
+      {/* Legend - moved to bottom left */}
+      <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-sm border border-white/10 rounded-lg p-3">
+        <p className="text-xs text-white/60 mb-1">Click a city to explore</p>
         <p className="text-xs text-white font-medium">{cities.length} locations worldwide</p>
       </div>
     </div>
