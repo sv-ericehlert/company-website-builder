@@ -1,4 +1,4 @@
-import { useState } from "react";
+
 import { User, Instagram, Briefcase, Building2, MapPin, Plane, Star, Music, X, MoreHorizontal, Search, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
