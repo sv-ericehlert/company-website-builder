@@ -1,12 +1,35 @@
-import { User, Instagram, Briefcase, Building2, MapPin, Plane, Star, Music, X, MoreHorizontal } from "lucide-react";
+import { useState } from "react";
+import { User, Instagram, Briefcase, Building2, MapPin, Plane, Star, Music, X, MoreHorizontal, Search, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface MemberProfileProps {
   profile: any;
   user: any;
   onClose?: () => void;
 }
+
+const cities = [
+  "Los Angeles, CA",
+  "New York, NY",
+  "Miami, FL",
+  "Chicago, IL",
+  "San Francisco, CA",
+  "Austin, TX",
+  "Seattle, WA",
+  "Paris, France",
+  "London, UK",
+  "Berlin, Germany",
+  "Tokyo, Japan",
+  "Sydney, Australia",
+];
 
 const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   const firstName = profile?.first_name || user?.user_metadata?.first_name || 'Member';
@@ -34,16 +57,48 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
 
       {/* Content */}
       <div className="relative z-10 pt-8 px-4 max-w-lg mx-auto">
-        {/* Close and More buttons */}
-        <div className="flex justify-between items-center mb-6">
+        {/* Top bar with close, search, city dropdown, and more */}
+        <div className="flex justify-between items-center gap-3 mb-6">
           {onClose && (
-            <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-background/30 backdrop-blur-sm">
+            <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-background/30 backdrop-blur-sm shrink-0">
               <X className="w-5 h-5" />
             </Button>
           )}
-          <Button variant="ghost" size="icon" className="rounded-full bg-background/30 backdrop-blur-sm ml-auto">
-            <MoreHorizontal className="w-5 h-5" />
-          </Button>
+          
+          {/* Search and City Dropdown - Right side */}
+          <div className="flex items-center gap-2 ml-auto">
+            {/* Search Bar */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input 
+                placeholder="Search..." 
+                className="pl-9 h-9 w-32 sm:w-40 bg-background/30 backdrop-blur-sm border-border/30 focus:bg-background/50"
+              />
+            </div>
+            
+            {/* City Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-9 px-3 bg-background/30 backdrop-blur-sm border border-border/30 hover:bg-background/50">
+                  <MapPin className="w-4 h-4 mr-2 text-primary" />
+                  <span className="text-sm hidden sm:inline">City</span>
+                  <ChevronDown className="w-4 h-4 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 bg-card border-border/50">
+                {cities.map((city) => (
+                  <DropdownMenuItem key={city} className="cursor-pointer">
+                    <MapPin className="w-4 h-4 mr-2 text-muted-foreground" />
+                    {city}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
+            <Button variant="ghost" size="icon" className="rounded-full bg-background/30 backdrop-blur-sm shrink-0">
+              <MoreHorizontal className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
 
         {/* Profile Header */}
