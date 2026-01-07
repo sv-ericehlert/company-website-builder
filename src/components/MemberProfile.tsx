@@ -1,4 +1,3 @@
-
 import { User, Instagram, Briefcase, Building2, MapPin, Plane, Star, Music, X, MoreHorizontal, Search, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,9 +33,8 @@ const cities = [
 const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   const firstName = profile?.first_name || user?.user_metadata?.first_name || 'Member';
   const lastName = profile?.last_name || user?.user_metadata?.last_name || '';
-  const age = 28; // Placeholder - would come from profile
+  const age = 28;
   
-  // Placeholder data - these would come from extended profile fields
   const profession = "Software Developer";
   const company = "StageVest Inc.";
   const location = "Los Angeles, CA";
@@ -103,7 +101,6 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
 
         {/* Profile Header */}
         <div className="mb-6">
-          {/* Avatar */}
           <div className="w-24 h-24 rounded-full bg-primary/20 border-4 border-background flex items-center justify-center overflow-hidden mb-4 shadow-lg">
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
@@ -112,23 +109,18 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
             )}
           </div>
 
-          {/* Name and Age */}
           <h1 className="font-display text-3xl font-bold text-foreground">
             {firstName} <span className="text-muted-foreground font-normal text-2xl">{age}</span>
           </h1>
 
-          {/* Profession & Company */}
           <p className="text-muted-foreground text-sm mt-1">
             {profession}, {company}
           </p>
 
-          {/* Instagram Handle */}
           <p className="text-primary text-sm mt-1">{instagram}</p>
 
-          {/* Location */}
           <p className="text-muted-foreground text-sm mt-1">{location}</p>
 
-          {/* Name Badge */}
           <Badge variant="secondary" className="mt-3 bg-primary/20 text-primary border-0">
             👑 {firstName}
           </Badge>
