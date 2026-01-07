@@ -4,6 +4,7 @@ import { LogOut, User, Calendar, MapPin, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import Logo from "@/components/Logo";
+import MemberProfile from "@/components/MemberProfile";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -221,50 +222,8 @@ const Dashboard = () => {
         </TabsContent>
 
         {/* Profile Tab */}
-        <TabsContent value="profile" className="pt-24 pb-12 px-4 mt-0">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="font-display text-3xl font-bold mb-6">Your Profile</h2>
-            
-            <div className="bg-card/50 border border-border/50 rounded-xl p-6">
-              <div className="flex items-start justify-between mb-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
-                    {profile?.avatar_url ? (
-                      <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-                    ) : (
-                      <User className="w-10 h-10 text-primary" />
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="font-display text-xl font-semibold">
-                      {profile?.first_name || 'Member'} {profile?.last_name || ''}
-                    </h3>
-                    <p className="text-muted-foreground">{user?.email}</p>
-                  </div>
-                </div>
-                <Button variant="outline" size="sm">
-                  <Settings className="w-4 h-4 mr-2" />
-                  Edit Profile
-                </Button>
-              </div>
-
-              <div className="grid sm:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p className="text-muted-foreground mb-1">Member since</p>
-                  <p className="font-medium">
-                    {new Date(user?.created_at || Date.now()).toLocaleDateString('en-US', {
-                      month: 'long',
-                      year: 'numeric'
-                    })}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground mb-1">Account status</p>
-                  <p className="font-medium text-green-500">Active</p>
-                </div>
-              </div>
-            </div>
-          </div>
+        <TabsContent value="profile" className="pt-16 mt-0">
+          <MemberProfile profile={profile} user={user} />
         </TabsContent>
       </Tabs>
     </div>
