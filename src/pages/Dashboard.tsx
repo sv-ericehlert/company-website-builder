@@ -96,13 +96,19 @@ const Dashboard = () => {
               <TabsTrigger value="members">Members</TabsTrigger>
             </TabsList>
 
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground hidden sm:block">
-                {user?.email}
-              </span>
+            <div className="flex items-center gap-2">
+              <TabsTrigger value="profile" className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <User className="w-3.5 h-3.5 text-primary" />
+                  )}
+                </div>
+                <span className="hidden sm:inline">Profile</span>
+              </TabsTrigger>
               <Button variant="ghost" size="sm" onClick={handleSignOut}>
-                <LogOut className="w-4 h-4 mr-2" />
-                Sign Out
+                <LogOut className="w-4 h-4" />
               </Button>
             </div>
           </div>
@@ -210,6 +216,53 @@ const Dashboard = () => {
           }>
             <Globe />
           </Suspense>
+        </TabsContent>
+
+        {/* Profile Tab */}
+        <TabsContent value="profile" className="pt-24 pb-12 px-4 mt-0">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="font-display text-3xl font-bold mb-6">Your Profile</h2>
+            
+            <div className="bg-card/50 border border-border/50 rounded-xl p-6">
+              <div className="flex items-start justify-between mb-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+                    {profile?.avatar_url ? (
+                      <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      <User className="w-10 h-10 text-primary" />
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-display text-xl font-semibold">
+                      {profile?.first_name || 'Member'} {profile?.last_name || ''}
+                    </h3>
+                    <p className="text-muted-foreground">{user?.email}</p>
+                  </div>
+                </div>
+                <Button variant="outline" size="sm">
+                  <Settings className="w-4 h-4 mr-2" />
+                  Edit Profile
+                </Button>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-muted-foreground mb-1">Member since</p>
+                  <p className="font-medium">
+                    {new Date(user?.created_at || Date.now()).toLocaleDateString('en-US', {
+                      month: 'long',
+                      year: 'numeric'
+                    })}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground mb-1">Account status</p>
+                  <p className="font-medium text-green-500">Active</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
