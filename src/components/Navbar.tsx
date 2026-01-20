@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Logo from "./Logo";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Mail } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const navLinks = [
   { label: "Jobs", href: "#jobs" },
@@ -12,6 +13,18 @@ const navLinks = [
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
+
+  const handleContactAdmin = async () => {
+    // implementation here
+    // This would send an email to admin@admin.org
+    console.log("Sending email to admin@admin.org");
+    
+    toast({
+      title: "Message Sent",
+      description: "Your message has been sent to the admin.",
+    });
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
@@ -41,6 +54,10 @@ const Navbar = () => {
             <Button asChild variant="default" size="sm">
               <Link to="/membership">Apply for Membership</Link>
             </Button>
+            <Button variant="outline" size="sm" onClick={handleContactAdmin}>
+              <Mail className="w-4 h-4 mr-2" />
+              Contact Admin
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -67,16 +84,22 @@ const Navbar = () => {
                   {link.label}
                 </a>
               ))}
-              <div className="flex gap-3 pt-4 border-t border-border/50">
-                <Button asChild variant="ghost" className="w-full flex-1">
-                  <Link to="/auth" onClick={() => setIsOpen(false)}>
-                    Sign In
-                  </Link>
-                </Button>
-                <Button asChild variant="default" className="w-full flex-1">
-                  <Link to="/membership" onClick={() => setIsOpen(false)}>
-                    Apply for Membership
-                  </Link>
+              <div className="flex flex-col gap-3 pt-4 border-t border-border/50">
+                <div className="flex gap-3">
+                  <Button asChild variant="ghost" className="w-full flex-1">
+                    <Link to="/auth" onClick={() => setIsOpen(false)}>
+                      Sign In
+                    </Link>
+                  </Button>
+                  <Button asChild variant="default" className="w-full flex-1">
+                    <Link to="/membership" onClick={() => setIsOpen(false)}>
+                      Apply for Membership
+                    </Link>
+                  </Button>
+                </div>
+                <Button variant="outline" className="w-full" onClick={() => { handleContactAdmin(); setIsOpen(false); }}>
+                  <Mail className="w-4 h-4 mr-2" />
+                  Contact Admin
                 </Button>
               </div>
             </div>
