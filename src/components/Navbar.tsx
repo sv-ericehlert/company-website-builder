@@ -51,9 +51,6 @@ const Navbar = () => {
             <Button asChild variant="ghost" size="sm">
               <Link to="/auth">Sign In</Link>
             </Button>
-            <Button asChild variant="default" size="sm">
-              <Link to="/membership">Apply for Membership</Link>
-            </Button>
             <Button variant="outline" size="sm" onClick={handleContactAdmin}>
               <Mail className="w-4 h-4 mr-2" />
               Contact Admin
@@ -85,18 +82,11 @@ const Navbar = () => {
                 </a>
               ))}
               <div className="flex flex-col gap-3 pt-4 border-t border-border/50">
-                <div className="flex gap-3">
-                  <Button asChild variant="ghost" className="w-full flex-1">
-                    <Link to="/auth" onClick={() => setIsOpen(false)}>
-                      Sign In
-                    </Link>
-                  </Button>
-                  <Button asChild variant="default" className="w-full flex-1">
-                    <Link to="/membership" onClick={() => setIsOpen(false)}>
-                      Apply for Membership
-                    </Link>
-                  </Button>
-                </div>
+                <Button asChild variant="ghost" className="w-full">
+                  <Link to="/auth" onClick={() => setIsOpen(false)}>
+                    Sign In
+                  </Link>
+                </Button>
                 <Button variant="outline" className="w-full" onClick={() => { handleContactAdmin(); setIsOpen(false); }}>
                   <Mail className="w-4 h-4 mr-2" />
                   Contact Admin
