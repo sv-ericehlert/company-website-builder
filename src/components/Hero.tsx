@@ -25,7 +25,7 @@ const Hero = () => {
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 opacity-0 animate-slide-up animation-delay-100">
             Where Talent
             <br />
-            Meets Eric
+            Meets Taylor
           </h1>
 
           {/* Subheadline */}
