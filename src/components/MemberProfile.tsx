@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { User, Instagram, Briefcase, MapPin, Plane, Star, Music, X, Pencil, Linkedin } from "lucide-react";
+import { User, Instagram, Briefcase, Building2, MapPin, Plane, Star, Music, X, Pencil, Linkedin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -75,6 +75,8 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   const photoUrl = applicationData?.photo_url || profile?.avatar_url || null;
 
   // Placeholder data for features not yet in applications
+  const company = "StageVest Inc.";
+  const gender = "Man";
   const interests = ["Music", "Tech", "Travel", "Networking", "Events", "Startups"];
   const frequentCities = ["Paris, France", "Miami, FL"];
 
@@ -125,7 +127,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
 
           {professions.length > 0 && (
             <p className="text-muted-foreground text-sm mt-1">
-              {professions.join(", ")}
+              {professions.join(", ")}, {company}
             </p>
           )}
 
@@ -168,12 +170,20 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
                 <span className="text-foreground/80">{age} years old</span>
               </div>
             )}
+            <div className="flex items-center gap-3 text-sm">
+              <User className="w-4 h-4 text-muted-foreground" />
+              <span className="text-foreground/80">{gender}</span>
+            </div>
             {professions.length > 0 && (
               <div className="flex items-center gap-3 text-sm">
                 <Briefcase className="w-4 h-4 text-muted-foreground" />
                 <span className="text-foreground/80">{professions.join(", ")}</span>
               </div>
             )}
+            <div className="flex items-center gap-3 text-sm">
+              <Building2 className="w-4 h-4 text-muted-foreground" />
+              <span className="text-foreground/80">{company}</span>
+            </div>
           </div>
         </div>
 
