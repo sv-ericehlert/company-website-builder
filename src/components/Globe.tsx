@@ -97,9 +97,9 @@ const CityMarker = ({ city, radius, onSelect, isSelected }: CityMarkerProps) => 
   });
 
   // Gold colors
-  const goldColor = "#FFD700";
-  const goldHover = "#FFEC8B";
-  const goldSelected = "#FFA500";
+  const goldColor = "#BB9743";
+  const goldHover = "#D4AF5A";
+  const goldSelected = "#9A7B35";
 
   return (
     <group position={position}>
