@@ -65,12 +65,13 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
     return age;
   };
   
-  const age = calculateAge(applicationData?.birthday || null);
-  const location = applicationData?.current_location || "Not specified";
-  const origin = applicationData?.origin || "Not specified";
-  const professions = applicationData?.professions || [];
-  const bio = applicationData?.introduction || "No bio yet.";
-  const instagram = applicationData?.instagram || null;
+  const calculatedAge = calculateAge(applicationData?.birthday || null);
+  const age = calculatedAge ?? 28; // Default to 28 if no birthday
+  const location = applicationData?.current_location || "Los Angeles, CA";
+  const origin = applicationData?.origin || "New York, NY";
+  const professions = applicationData?.professions?.length ? applicationData.professions : ["Software Developer"];
+  const bio = applicationData?.introduction || "Builder of things, lover of chaos (controlled, mostly). Addicted to coffee, travel, and high-speed strategy. Always looking for the next big opportunity! 🎯";
+  const instagram = applicationData?.instagram || "@" + firstName.toLowerCase();
   const linkedin = applicationData?.linkedin || null;
   const photoUrl = applicationData?.photo_url || profile?.avatar_url || null;
 
@@ -121,19 +122,14 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
           </div>
 
           <h1 className="font-display text-3xl font-bold text-foreground">
-            {firstName} {lastName && <span className="font-normal">{lastName}</span>}
-            {age && <span className="text-muted-foreground font-normal text-2xl ml-2">{age}</span>}
+            {firstName} <span className="text-muted-foreground font-normal text-2xl">{age}</span>
           </h1>
 
-          {professions.length > 0 && (
-            <p className="text-muted-foreground text-sm mt-1">
-              {professions.join(", ")}, {company}
-            </p>
-          )}
+          <p className="text-muted-foreground text-sm mt-1">
+            {professions.join(", ")}, {company}
+          </p>
 
-          {instagram && (
-            <p className="text-primary text-sm mt-1">{instagram}</p>
-          )}
+          <p className="text-primary text-sm mt-1">{instagram}</p>
 
           <p className="text-muted-foreground text-sm mt-1">{location}</p>
 
@@ -152,34 +148,28 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
           <h3 className="font-display text-lg font-semibold mb-4 text-foreground">About</h3>
           
           <div className="space-y-3">
-            {instagram && (
-              <div className="flex items-center gap-3 text-sm">
-                <Instagram className="w-4 h-4 text-primary" />
-                <span className="text-primary">{instagram}</span>
-              </div>
-            )}
+            <div className="flex items-center gap-3 text-sm">
+              <Instagram className="w-4 h-4 text-primary" />
+              <span className="text-primary">{instagram}</span>
+            </div>
             {linkedin && (
               <div className="flex items-center gap-3 text-sm">
                 <Linkedin className="w-4 h-4 text-primary" />
                 <span className="text-primary">{linkedin}</span>
               </div>
             )}
-            {age && (
-              <div className="flex items-center gap-3 text-sm">
-                <span className="w-4 h-4 flex items-center justify-center text-muted-foreground">🎂</span>
-                <span className="text-foreground/80">{age} years old</span>
-              </div>
-            )}
+            <div className="flex items-center gap-3 text-sm">
+              <span className="w-4 h-4 flex items-center justify-center text-muted-foreground">🎂</span>
+              <span className="text-foreground/80">{age}</span>
+            </div>
             <div className="flex items-center gap-3 text-sm">
               <User className="w-4 h-4 text-muted-foreground" />
               <span className="text-foreground/80">{gender}</span>
             </div>
-            {professions.length > 0 && (
-              <div className="flex items-center gap-3 text-sm">
-                <Briefcase className="w-4 h-4 text-muted-foreground" />
-                <span className="text-foreground/80">{professions.join(", ")}</span>
-              </div>
-            )}
+            <div className="flex items-center gap-3 text-sm">
+              <Briefcase className="w-4 h-4 text-muted-foreground" />
+              <span className="text-foreground/80">{professions.join(", ")}</span>
+            </div>
             <div className="flex items-center gap-3 text-sm">
               <Building2 className="w-4 h-4 text-muted-foreground" />
               <span className="text-foreground/80">{company}</span>
