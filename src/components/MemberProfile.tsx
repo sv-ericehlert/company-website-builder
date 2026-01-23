@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import EditProfileDialog from "./EditProfileDialog";
 import EditPortfolioDialog from "./EditPortfolioDialog";
+import EditInterestsDialog from "./EditInterestsDialog";
 
 interface MemberProfileProps {
   profile: any;
@@ -27,6 +28,7 @@ interface ProfileData {
   company: string | null;
   gender: string | null;
   cover_url: string | null;
+  interests: string[] | null;
 }
 
 interface PortfolioItem {
@@ -43,6 +45,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isPortfolioEditOpen, setIsPortfolioEditOpen] = useState(false);
+  const [isInterestsEditOpen, setIsInterestsEditOpen] = useState(false);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
   const coverInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -53,7 +56,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
     // implementation here
     const { data, error } = await supabase
       .from('profiles')
-      .select('first_name, last_name, birthday, current_location, origin, professions, introduction, instagram, linkedin, avatar_url, company, gender, cover_url')
+      .select('first_name, last_name, birthday, current_location, origin, professions, introduction, instagram, linkedin, avatar_url, company, gender, cover_url, interests')
       .eq('user_id', user.id)
       .maybeSingle();
     
@@ -182,9 +185,11 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   const company = profileData?.company || "StageVest Inc.";
   const gender = profileData?.gender || "Man";
   const coverUrl = profileData?.cover_url || null;
+  const interests = profileData?.interests?.length 
+    ? profileData.interests 
+    : ["Music", "Tech", "Travel", "Networking", "Events", "Startups", "Art", "Fashion", "Sports", "Food"];
 
   // Placeholder data for features not yet in profiles
-  const interests = ["Music", "Tech", "Travel", "Networking", "Events", "Startups", "Art", "Fashion", "Sports", "Food"];
   const frequentCities = ["Paris, France", "Miami, FL"];
 
   const defaultCoverImage = "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200";
@@ -387,7 +392,18 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
 
         {/* Interests Section */}
         <div className="bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl p-4 mb-4">
-          <h3 className="font-display text-lg font-semibold mb-4 text-foreground">Interests</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-display text-lg font-semibold text-foreground">Interests</h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsInterestsEditOpen(true)}
+              className="text-primary hover:text-primary/80"
+            >
+              <Pencil className="w-4 h-4 mr-1" />
+              Edit
+            </Button>
+          </div>
           
           <div className="flex flex-wrap gap-2">
             {interests.slice(0, 10).map((interest, index) => (
@@ -422,6 +438,17 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
         portfolioItems={portfolioItems}
         onSave={() => {
           fetchPortfolioItems();
+        }}
+      />
+
+      {/* Edit Interests Dialog */}
+      <EditInterestsDialog
+        open={isInterestsEditOpen}
+        onOpenChange={setIsInterestsEditOpen}
+        userId={user?.id}
+        currentInterests={profileData?.interests || []}
+        onSave={() => {
+          fetchProfileData();
         }}
       />
     </div>
