@@ -279,9 +279,8 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
 
           <p className="text-muted-foreground text-sm mt-1">{location}</p>
 
-          <Badge variant="secondary" className="mt-3 bg-primary/20 text-primary border-0 gap-1.5">
-            <img src={memberBadge} alt="" className="w-4 h-4" />
-            Member
+          <Badge variant="secondary" className="mt-3 bg-primary/20 text-primary border-0">
+            👑 Member
           </Badge>
 
           <Button
