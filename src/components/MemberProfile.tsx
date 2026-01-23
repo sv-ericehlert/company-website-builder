@@ -241,24 +241,14 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
 
       {/* Content */}
       <div className="relative z-10 pt-8 px-4 max-w-lg mx-auto">
-        {/* Top bar with close and edit buttons */}
-        <div className="flex justify-between mb-6">
-          {onClose ? (
+        {/* Top bar with close button */}
+        {onClose && (
+          <div className="flex justify-start mb-6">
             <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-background/30 backdrop-blur-sm shrink-0">
               <X className="w-5 h-5" />
             </Button>
-          ) : (
-            <div />
-          )}
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setIsEditOpen(true)} 
-            className="rounded-full bg-background/30 backdrop-blur-sm shrink-0"
-          >
-            <Pencil className="w-5 h-5" />
-          </Button>
-        </div>
+          </div>
+        )}
 
         {/* Profile Header */}
         <div className="mb-6 flex flex-col items-center text-center">
@@ -289,13 +279,33 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
 
         {/* Bio Card */}
         <div className="bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl p-4 mb-4">
-          <p className="text-foreground/90 text-sm leading-relaxed">{bio}</p>
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-foreground/90 text-sm leading-relaxed">{bio}</p>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsEditOpen(true)}
+              className="text-primary hover:text-primary/80 shrink-0 -mt-1"
+            >
+              <Pencil className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
 
         {/* About Section */}
         <div className="bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl p-4 mb-4">
-          <h3 className="font-display text-lg font-semibold mb-4 text-foreground">About</h3>
-          
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-display text-lg font-semibold text-foreground">About</h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsEditOpen(true)}
+              className="text-primary hover:text-primary/80"
+            >
+              <Pencil className="w-4 h-4 mr-1" />
+              Edit
+            </Button>
+          </div>
           <div className="space-y-3">
             <div className="flex items-center gap-3 text-sm">
               <Instagram className="w-4 h-4 text-primary" />
