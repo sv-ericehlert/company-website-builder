@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Camera, User } from "lucide-react";
 
 interface ProfileData {
   first_name: string | null;
@@ -18,6 +19,7 @@ interface ProfileData {
   linkedin: string | null;
   company: string | null;
   gender: string | null;
+  avatar_url: string | null;
 }
 
 interface EditProfileDialogProps {
@@ -31,6 +33,9 @@ interface EditProfileDialogProps {
 const EditProfileDialog = ({ open, onOpenChange, profileData, userId, onSave }: EditProfileDialogProps) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [formData, setFormData] = useState({
     first_name: "",
@@ -43,6 +48,7 @@ const EditProfileDialog = ({ open, onOpenChange, profileData, userId, onSave }: 
     linkedin: "",
     company: "",
     gender: "",
+    avatar_url: "",
   });
 
   useEffect(() => {
@@ -58,9 +64,79 @@ const EditProfileDialog = ({ open, onOpenChange, profileData, userId, onSave }: 
         linkedin: profileData.linkedin || "",
         company: profileData.company || "",
         gender: profileData.gender || "",
+        avatar_url: profileData.avatar_url || "",
       });
+      setPreviewUrl(profileData.avatar_url);
     }
   }, [profileData]);
+
+  const handlePhotoClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !userId) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload an image file",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please upload an image smaller than 5MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      // Create a unique file name
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${userId}/avatar.${fileExt}`;
+
+      // implementation here
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      // Get the public URL
+      const { data: urlData } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+      
+      setFormData(prev => ({ ...prev, avatar_url: publicUrl }));
+      setPreviewUrl(publicUrl);
+
+      toast({
+        title: "Photo uploaded",
+        description: "Your profile photo has been uploaded",
+      });
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload photo. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleSave = async () => {
     if (!userId) {
@@ -88,6 +164,7 @@ const EditProfileDialog = ({ open, onOpenChange, profileData, userId, onSave }: 
         linkedin: formData.linkedin || null,
         company: formData.company || null,
         gender: formData.gender || null,
+        avatar_url: formData.avatar_url || null,
       })
       .eq('user_id', userId);
 
@@ -120,6 +197,36 @@ const EditProfileDialog = ({ open, onOpenChange, profileData, userId, onSave }: 
         </DialogHeader>
 
         <div className="space-y-4 py-4">
+          {/* Photo Upload */}
+          <div className="flex flex-col items-center gap-3">
+            <div 
+              onClick={handlePhotoClick}
+              className="relative w-24 h-24 rounded-full bg-primary/20 border-2 border-dashed border-primary/50 flex items-center justify-center overflow-hidden cursor-pointer hover:border-primary transition-colors group"
+            >
+              {previewUrl ? (
+                <img src={previewUrl} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <User className="w-10 h-10 text-primary/50" />
+              )}
+              <div className="absolute inset-0 bg-background/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <Camera className="w-6 h-6 text-primary" />
+              </div>
+              {isUploading && (
+                <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
+                  <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                </div>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <p className="text-xs text-muted-foreground">Click to upload photo</p>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="first_name">First Name</Label>
@@ -225,7 +332,7 @@ const EditProfileDialog = ({ open, onOpenChange, profileData, userId, onSave }: 
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={isLoading}>
+          <Button onClick={handleSave} disabled={isLoading || isUploading}>
             {isLoading ? "Saving..." : "Save Changes"}
           </Button>
         </DialogFooter>
