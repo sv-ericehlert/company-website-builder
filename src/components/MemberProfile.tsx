@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { User, Instagram, Briefcase, Building2, MapPin, Plane, Star, X, Pencil, Linkedin, ExternalLink, FolderOpen, Camera } from "lucide-react";
+import { User, Instagram, Briefcase, Building2, MapPin, Plane, Star, X, Pencil, Linkedin, ExternalLink, FolderOpen, Camera, Image, Video, Link as LinkIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import EditProfileDialog from "./EditProfileDialog";
+import EditPortfolioDialog from "./EditPortfolioDialog";
 
 interface MemberProfileProps {
   profile: any;
@@ -28,9 +29,20 @@ interface ProfileData {
   cover_url: string | null;
 }
 
+interface PortfolioItem {
+  id: string;
+  title: string;
+  description: string | null;
+  type: 'photo' | 'video' | 'link';
+  url: string;
+  thumbnail_url: string | null;
+}
+
 const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isPortfolioEditOpen, setIsPortfolioEditOpen] = useState(false);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
   const coverInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -50,9 +62,25 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
     }
   }, [user?.id]);
 
+  const fetchPortfolioItems = useCallback(async () => {
+    if (!user?.id) return;
+    
+    // implementation here
+    const { data, error } = await supabase
+      .from('portfolio_items')
+      .select('id, title, description, type, url, thumbnail_url')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+    
+    if (!error && data) {
+      setPortfolioItems(data as PortfolioItem[]);
+    }
+  }, [user?.id]);
+
   useEffect(() => {
     fetchProfileData();
-  }, [fetchProfileData]);
+    fetchPortfolioItems();
+  }, [fetchProfileData, fetchPortfolioItems]);
 
   const handleCoverClick = () => {
     coverInputRef.current?.click();
@@ -158,13 +186,16 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   // Placeholder data for features not yet in profiles
   const interests = ["Music", "Tech", "Travel", "Networking", "Events", "Startups"];
   const frequentCities = ["Paris, France", "Miami, FL"];
-  const portfolioItems = [
-    { title: "Project Alpha", description: "A revolutionary app for music collaboration", link: "#" },
-    { title: "StageVest Platform", description: "Connecting talent with opportunity", link: "#" },
-    { title: "Event Series", description: "Curated networking events in major cities", link: "#" },
-  ];
 
   const defaultCoverImage = "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200";
+
+  const getTypeIcon = (type: 'photo' | 'video' | 'link') => {
+    switch (type) {
+      case 'photo': return <Image className="w-4 h-4" />;
+      case 'video': return <Video className="w-4 h-4" />;
+      case 'link': return <LinkIcon className="w-4 h-4" />;
+    }
+  };
 
   return (
     <div className="relative min-h-[calc(100vh-8rem)] overflow-hidden">
@@ -310,26 +341,48 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
 
         {/* Portfolio Section */}
         <div className="bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl p-4 mb-4">
-          <h3 className="font-display text-lg font-semibold mb-4 text-foreground flex items-center gap-2">
-            <FolderOpen className="w-5 h-5 text-primary" />
-            Portfolio
-          </h3>
-          
-          <div className="space-y-3">
-            {portfolioItems.map((item, index) => (
-              <a 
-                key={index}
-                href={item.link}
-                className="flex items-start justify-between gap-3 p-3 rounded-xl bg-background/30 hover:bg-background/50 transition-colors group"
-              >
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-foreground group-hover:text-primary transition-colors">{item.title}</p>
-                  <p className="text-sm text-muted-foreground truncate">{item.description}</p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1" />
-              </a>
-            ))}
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-display text-lg font-semibold text-foreground flex items-center gap-2">
+              <FolderOpen className="w-5 h-5 text-primary" />
+              Portfolio
+            </h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsPortfolioEditOpen(true)}
+              className="text-primary hover:text-primary/80"
+            >
+              <Pencil className="w-4 h-4 mr-1" />
+              Edit
+            </Button>
           </div>
+          
+          {portfolioItems.length > 0 ? (
+            <div className="space-y-3">
+              {portfolioItems.map((item) => (
+                <a 
+                  key={item.id}
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-3 p-3 rounded-xl bg-background/30 hover:bg-background/50 transition-colors group"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary shrink-0">
+                    {getTypeIcon(item.type)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-foreground group-hover:text-primary transition-colors">{item.title}</p>
+                    {item.description && (
+                      <p className="text-sm text-muted-foreground truncate">{item.description}</p>
+                    )}
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1" />
+                </a>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground text-center py-4">No portfolio items yet. Click Edit to add your work.</p>
+          )}
         </div>
 
         {/* Interests Section */}
@@ -361,6 +414,17 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
         userId={user?.id}
         onSave={() => {
           fetchProfileData();
+        }}
+      />
+
+      {/* Edit Portfolio Dialog */}
+      <EditPortfolioDialog
+        open={isPortfolioEditOpen}
+        onOpenChange={setIsPortfolioEditOpen}
+        userId={user?.id}
+        portfolioItems={portfolioItems}
+        onSave={() => {
+          fetchPortfolioItems();
         }}
       />
     </div>
