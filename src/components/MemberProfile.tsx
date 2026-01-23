@@ -44,7 +44,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
         )}
 
         {/* Profile Header */}
-        <div className="mb-6">
+        <div className="mb-6 flex flex-col items-center text-center">
           <div className="w-32 h-32 rounded-full bg-primary/20 border-4 border-background flex items-center justify-center overflow-hidden mb-4 shadow-lg">
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
