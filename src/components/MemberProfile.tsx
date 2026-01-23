@@ -408,63 +408,75 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
           </div>
           
           {portfolioItems.length > 0 ? (
-            <div className="space-y-4">
-              {portfolioItems.map((item) => (
-                <div 
-                  key={item.id}
-                  className="rounded-xl overflow-hidden bg-background/30"
-                >
-                  {/* Media Display */}
-                  {item.type === 'photo' && (
-                    <div className="aspect-video w-full overflow-hidden">
-                      <img 
-                        src={item.url} 
-                        alt={item.title} 
-                        className="w-full h-full object-cover"
-                      />
+            <>
+              {/* Media Grid - photos and videos */}
+              {portfolioItems.filter(item => item.type === 'photo' || item.type === 'video').length > 0 && (
+                <div className={`grid gap-2 ${
+                  portfolioItems.filter(item => item.type === 'photo' || item.type === 'video').length === 1 
+                    ? 'grid-cols-1' 
+                    : portfolioItems.filter(item => item.type === 'photo' || item.type === 'video').length === 2 
+                    ? 'grid-cols-2'
+                    : portfolioItems.filter(item => item.type === 'photo' || item.type === 'video').length === 3
+                    ? 'grid-cols-3'
+                    : portfolioItems.filter(item => item.type === 'photo' || item.type === 'video').length === 4
+                    ? 'grid-cols-4'
+                    : 'grid-cols-5'
+                }`}>
+                  {portfolioItems.filter(item => item.type === 'photo' || item.type === 'video').map((item) => (
+                    <div 
+                      key={item.id}
+                      className="aspect-square rounded-lg overflow-hidden bg-background/30 group relative"
+                      title={item.title}
+                    >
+                      {item.type === 'photo' && (
+                        <img 
+                          src={item.url} 
+                          alt={item.title} 
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                      {item.type === 'video' && (
+                        <video 
+                          src={item.url} 
+                          controls
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                      {/* Hover overlay with title */}
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2">
+                        <p className="text-white text-xs font-medium truncate w-full">{item.title}</p>
+                      </div>
                     </div>
-                  )}
-                  {item.type === 'video' && (
-                    <div className="aspect-video w-full overflow-hidden">
-                      <video 
-                        src={item.url} 
-                        controls
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                  {item.type === 'link' && (
+                  ))}
+                </div>
+              )}
+              
+              {/* Links - displayed separately */}
+              {portfolioItems.filter(item => item.type === 'link').length > 0 && (
+                <div className="space-y-2 mt-4">
+                  {portfolioItems.filter(item => item.type === 'link').map((item) => (
                     <a 
+                      key={item.id}
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-4 hover:bg-background/50 transition-colors group"
+                      className="flex items-center gap-3 p-3 rounded-xl bg-background/30 hover:bg-background/50 transition-colors group"
                     >
-                      <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center text-primary shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary shrink-0">
                         {getTypeIcon(item.type)}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-foreground group-hover:text-primary transition-colors">{item.title}</p>
+                        <p className="font-medium text-foreground group-hover:text-primary transition-colors text-sm">{item.title}</p>
                         {item.description && (
-                          <p className="text-sm text-muted-foreground truncate">{item.description}</p>
+                          <p className="text-xs text-muted-foreground truncate">{item.description}</p>
                         )}
                       </div>
                       <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
                     </a>
-                  )}
-                  
-                  {/* Title and Description for photos/videos */}
-                  {(item.type === 'photo' || item.type === 'video') && (
-                    <div className="p-3">
-                      <p className="font-medium text-foreground">{item.title}</p>
-                      {item.description && (
-                        <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
-                      )}
-                    </div>
-                  )}
+                  ))}
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           ) : (
             <p className="text-sm text-muted-foreground text-center py-4">No portfolio items yet. Click Edit to add your work.</p>
           )}
