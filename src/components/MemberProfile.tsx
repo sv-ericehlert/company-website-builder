@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { User, Instagram, Briefcase, Building2, MapPin, Plane, Star, Music, X, Pencil, Linkedin } from "lucide-react";
+import { User, Instagram, Briefcase, Building2, MapPin, Plane, Star, Music, X, Pencil, Linkedin, ExternalLink, FolderOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -81,6 +81,11 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   // Placeholder data for features not yet in profiles
   const interests = ["Music", "Tech", "Travel", "Networking", "Events", "Startups"];
   const frequentCities = ["Paris, France", "Miami, FL"];
+  const portfolioItems = [
+    { title: "Project Alpha", description: "A revolutionary app for music collaboration", link: "#" },
+    { title: "StageVest Platform", description: "Connecting talent with opportunity", link: "#" },
+    { title: "Event Series", description: "Curated networking events in major cities", link: "#" },
+  ];
 
   return (
     <div className="relative min-h-[calc(100vh-8rem)] overflow-hidden">
@@ -197,6 +202,31 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
                 <span className="text-primary">Often Visits:</span> {frequentCities.join(" and ")}
               </span>
             </div>
+          </div>
+        </div>
+
+
+        {/* Portfolio Section */}
+        <div className="bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl p-4 mb-4">
+          <h3 className="font-display text-lg font-semibold mb-4 text-foreground flex items-center gap-2">
+            <FolderOpen className="w-5 h-5 text-primary" />
+            Portfolio
+          </h3>
+          
+          <div className="space-y-3">
+            {portfolioItems.map((item, index) => (
+              <a 
+                key={index}
+                href={item.link}
+                className="flex items-start justify-between gap-3 p-3 rounded-xl bg-background/30 hover:bg-background/50 transition-colors group"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-foreground group-hover:text-primary transition-colors">{item.title}</p>
+                  <p className="text-sm text-muted-foreground truncate">{item.description}</p>
+                </div>
+                <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1" />
+              </a>
+            ))}
           </div>
         </div>
 
