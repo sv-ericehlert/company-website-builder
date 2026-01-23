@@ -123,7 +123,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
           </div>
 
           <h1 className="font-display text-3xl font-bold text-foreground">
-            {firstName} <span className="text-muted-foreground font-normal text-2xl">{age}</span>
+            {firstName}
           </h1>
 
           <p className="text-muted-foreground text-sm mt-1">
@@ -135,7 +135,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
           <p className="text-muted-foreground text-sm mt-1">{location}</p>
 
           <Badge variant="secondary" className="mt-3 bg-primary/20 text-primary border-0">
-            👑 {firstName}
+            👑 Member
           </Badge>
         </div>
 
