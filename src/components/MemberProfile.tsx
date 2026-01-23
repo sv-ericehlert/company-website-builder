@@ -195,7 +195,8 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   const company = profileData?.company || "StageVest Inc.";
   const gender = profileData?.gender || "Man";
   const coverUrl = profileData?.cover_url || null;
-  const interests = profileData?.interests?.length 
+  const hasRealInterests = profileData?.interests && profileData.interests.length > 0;
+  const interests = hasRealInterests 
     ? profileData.interests 
     : ["Music", "Tech", "Travel", "Networking", "Events", "Startups", "Art", "Fashion", "Sports", "Food"];
 
@@ -531,15 +532,22 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
                 className="bg-primary/10 border-primary/30 text-primary hover:bg-primary/20 transition-colors gap-1 pr-1"
               >
                 {interest}
-                <button
-                  onClick={() => handleRemoveInterest(interest)}
-                  className="ml-1 p-0.5 rounded-full hover:bg-primary/30 transition-colors"
-                >
-                  <X className="w-3 h-3" />
-                </button>
+                {hasRealInterests && (
+                  <button
+                    onClick={() => handleRemoveInterest(interest)}
+                    className="ml-1 p-0.5 rounded-full hover:bg-primary/30 transition-colors"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
               </Badge>
             ))}
           </div>
+          {!hasRealInterests && (
+            <p className="text-xs text-muted-foreground mt-2">
+              These are placeholder interests. Click Edit to add your own.
+            </p>
+          )}
         </div>
       </div>
 
