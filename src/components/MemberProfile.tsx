@@ -408,26 +408,61 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
           </div>
           
           {portfolioItems.length > 0 ? (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {portfolioItems.map((item) => (
-                <a 
+                <div 
                   key={item.id}
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-start gap-3 p-3 rounded-xl bg-background/30 hover:bg-background/50 transition-colors group"
+                  className="rounded-xl overflow-hidden bg-background/30"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary shrink-0">
-                    {getTypeIcon(item.type)}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-foreground group-hover:text-primary transition-colors">{item.title}</p>
-                    {item.description && (
-                      <p className="text-sm text-muted-foreground truncate">{item.description}</p>
-                    )}
-                  </div>
-                  <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1" />
-                </a>
+                  {/* Media Display */}
+                  {item.type === 'photo' && (
+                    <div className="aspect-video w-full overflow-hidden">
+                      <img 
+                        src={item.url} 
+                        alt={item.title} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  {item.type === 'video' && (
+                    <div className="aspect-video w-full overflow-hidden">
+                      <video 
+                        src={item.url} 
+                        controls
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  {item.type === 'link' && (
+                    <a 
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-4 hover:bg-background/50 transition-colors group"
+                    >
+                      <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center text-primary shrink-0">
+                        {getTypeIcon(item.type)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-foreground group-hover:text-primary transition-colors">{item.title}</p>
+                        {item.description && (
+                          <p className="text-sm text-muted-foreground truncate">{item.description}</p>
+                        )}
+                      </div>
+                      <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+                    </a>
+                  )}
+                  
+                  {/* Title and Description for photos/videos */}
+                  {(item.type === 'photo' || item.type === 'video') && (
+                    <div className="p-3">
+                      <p className="font-medium text-foreground">{item.title}</p>
+                      {item.description && (
+                        <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
+                      )}
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           ) : (
