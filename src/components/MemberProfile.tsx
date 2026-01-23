@@ -9,6 +9,8 @@ import EditPortfolioDialog from "./EditPortfolioDialog";
 import EditInterestsDialog from "./EditInterestsDialog";
 import EditLocationsDialog from "./EditLocationsDialog";
 import EditAboutDialog from "./EditAboutDialog";
+import EditBioDialog from "./EditBioDialog";
+import EditHeaderDialog from "./EditHeaderDialog";
 
 interface MemberProfileProps {
   profile: any;
@@ -47,6 +49,8 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isHeaderEditOpen, setIsHeaderEditOpen] = useState(false);
+  const [isBioEditOpen, setIsBioEditOpen] = useState(false);
   const [isAboutEditOpen, setIsAboutEditOpen] = useState(false);
   const [isPortfolioEditOpen, setIsPortfolioEditOpen] = useState(false);
   const [isInterestsEditOpen, setIsInterestsEditOpen] = useState(false);
@@ -277,6 +281,16 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
           <Badge variant="secondary" className="mt-3 bg-primary/20 text-primary border-0">
             👑 Member
           </Badge>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsHeaderEditOpen(true)}
+            className="mt-2 text-primary hover:text-primary/80"
+          >
+            <Pencil className="w-4 h-4 mr-1" />
+            Edit
+          </Button>
         </div>
 
         {/* Bio Card */}
@@ -286,7 +300,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setIsEditOpen(true)}
+              onClick={() => setIsBioEditOpen(true)}
               className="text-primary hover:text-primary/80 shrink-0 -mt-1"
             >
               <Pencil className="w-4 h-4" />
@@ -498,6 +512,28 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
       <EditAboutDialog
         open={isAboutEditOpen}
         onOpenChange={setIsAboutEditOpen}
+        userId={user?.id}
+        profileData={profileData}
+        onSave={() => {
+          fetchProfileData();
+        }}
+      />
+
+      {/* Edit Bio Dialog */}
+      <EditBioDialog
+        open={isBioEditOpen}
+        onOpenChange={setIsBioEditOpen}
+        userId={user?.id}
+        currentBio={profileData?.introduction || null}
+        onSave={() => {
+          fetchProfileData();
+        }}
+      />
+
+      {/* Edit Header Dialog */}
+      <EditHeaderDialog
+        open={isHeaderEditOpen}
+        onOpenChange={setIsHeaderEditOpen}
         userId={user?.id}
         profileData={profileData}
         onSave={() => {
