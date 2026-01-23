@@ -38,7 +38,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
         .select('first_name, last_name, birthday, current_location, origin, professions, introduction, instagram, linkedin, photo_url')
         .eq('email', user.email)
         .eq('status', 'approved')
-        .single();
+        .maybeSingle();
       
       if (!error && data) {
         setApplicationData(data);
