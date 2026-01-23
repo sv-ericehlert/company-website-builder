@@ -295,17 +295,19 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
 
         {/* Bio Card */}
         <div className="bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl p-4 mb-4">
-          <div className="flex items-start justify-between gap-2">
-            <p className="text-foreground/90 text-sm leading-relaxed">{bio}</p>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="font-display text-lg font-semibold text-foreground">Bio</h3>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsBioEditOpen(true)}
-              className="text-primary hover:text-primary/80 shrink-0 -mt-1"
+              className="text-primary hover:text-primary/80"
             >
-              <Pencil className="w-4 h-4" />
+              <Pencil className="w-4 h-4 mr-1" />
+              Edit
             </Button>
           </div>
+          <p className="text-foreground/90 text-sm leading-relaxed">{bio}</p>
         </div>
 
         {/* About Section */}
