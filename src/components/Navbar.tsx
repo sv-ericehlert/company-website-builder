@@ -51,6 +51,9 @@ const Navbar = () => {
             <Button asChild variant="ghost" size="sm">
               <Link to="/auth">Sign In</Link>
             </Button>
+            <Button asChild size="sm">
+              <Link to="/membership">Apply for Membership</Link>
+            </Button>
             <Button variant="outline" size="sm" onClick={handleContactAdmin}>
               <Mail className="w-4 h-4 mr-2" />
               Contact Admin
@@ -85,6 +88,11 @@ const Navbar = () => {
                 <Button asChild variant="ghost" className="w-full">
                   <Link to="/auth" onClick={() => setIsOpen(false)}>
                     Sign In
+                  </Link>
+                </Button>
+                <Button asChild className="w-full">
+                  <Link to="/membership" onClick={() => setIsOpen(false)}>
+                    Apply for Membership
                   </Link>
                 </Button>
                 <Button variant="outline" className="w-full" onClick={() => { handleContactAdmin(); setIsOpen(false); }}>
