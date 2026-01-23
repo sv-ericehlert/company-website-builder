@@ -305,7 +305,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
 
           <p className="text-muted-foreground text-sm mt-1">{location}</p>
 
-          <Badge variant="secondary" className="mt-3 bg-primary/20 text-primary border-0">
+          <Badge variant="secondary" className="mt-3 bg-primary/20 text-white border-0">
             👑 Member
           </Badge>
 
