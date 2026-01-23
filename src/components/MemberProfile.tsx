@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { User, Instagram, Briefcase, Building2, MapPin, Plane, Star, Music, X, Pencil, Linkedin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,9 +11,9 @@ interface MemberProfileProps {
   onClose?: () => void;
 }
 
-interface ApplicationData {
-  first_name: string;
-  last_name: string;
+interface ProfileData {
+  first_name: string | null;
+  last_name: string | null;
   birthday: string | null;
   current_location: string | null;
   origin: string | null;
@@ -21,36 +21,37 @@ interface ApplicationData {
   introduction: string | null;
   instagram: string | null;
   linkedin: string | null;
-  photo_url: string | null;
+  avatar_url: string | null;
+  company: string | null;
+  gender: string | null;
 }
 
 const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
-  const [applicationData, setApplicationData] = useState<ApplicationData | null>(null);
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
+  const fetchProfileData = useCallback(async () => {
+    if (!user?.id) return;
+    
+    // implementation here
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('first_name, last_name, birthday, current_location, origin, professions, introduction, instagram, linkedin, avatar_url, company, gender')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    
+    if (!error && data) {
+      setProfileData(data);
+    }
+  }, [user?.id]);
+
   useEffect(() => {
-    const fetchApplicationData = async () => {
-      if (!user?.email) return;
-      
-      // implementation here
-      const { data, error } = await supabase
-        .from('membership_applications')
-        .select('first_name, last_name, birthday, current_location, origin, professions, introduction, instagram, linkedin, photo_url')
-        .eq('email', user.email)
-        .eq('status', 'approved')
-        .maybeSingle();
-      
-      if (!error && data) {
-        setApplicationData(data);
-      }
-    };
+    fetchProfileData();
+  }, [fetchProfileData]);
 
-    fetchApplicationData();
-  }, [user?.email]);
-
-  // Use application data first, then profile, then user metadata
-  const firstName = applicationData?.first_name || profile?.first_name || user?.user_metadata?.first_name || 'Member';
-  const lastName = applicationData?.last_name || profile?.last_name || user?.user_metadata?.last_name || '';
+  // Use profile data first, then passed profile prop, then user metadata
+  const firstName = profileData?.first_name || profile?.first_name || user?.user_metadata?.first_name || 'Member';
+  const lastName = profileData?.last_name || profile?.last_name || user?.user_metadata?.last_name || '';
   
   // Calculate age from birthday
   const calculateAge = (birthday: string | null): number | null => {
@@ -65,19 +66,19 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
     return age;
   };
   
-  const calculatedAge = calculateAge(applicationData?.birthday || null);
+  const calculatedAge = calculateAge(profileData?.birthday || null);
   const age = calculatedAge ?? 28; // Default to 28 if no birthday
-  const location = applicationData?.current_location || "Los Angeles, CA";
-  const origin = applicationData?.origin || "New York, NY";
-  const professions = applicationData?.professions?.length ? applicationData.professions : ["Software Developer"];
-  const bio = applicationData?.introduction || "Builder of things, lover of chaos (controlled, mostly). Addicted to coffee, travel, and high-speed strategy. Always looking for the next big opportunity! 🎯";
-  const instagram = applicationData?.instagram || "@" + firstName.toLowerCase();
-  const linkedin = applicationData?.linkedin || null;
-  const photoUrl = applicationData?.photo_url || profile?.avatar_url || null;
+  const location = profileData?.current_location || "Los Angeles, CA";
+  const origin = profileData?.origin || "New York, NY";
+  const professions = profileData?.professions?.length ? profileData.professions : ["Software Developer"];
+  const bio = profileData?.introduction || "Builder of things, lover of chaos (controlled, mostly). Addicted to coffee, travel, and high-speed strategy. Always looking for the next big opportunity! 🎯";
+  const instagram = profileData?.instagram || "@" + firstName.toLowerCase();
+  const linkedin = profileData?.linkedin || null;
+  const photoUrl = profileData?.avatar_url || profile?.avatar_url || null;
+  const company = profileData?.company || "StageVest Inc.";
+  const gender = profileData?.gender || "Man";
 
-  // Placeholder data for features not yet in applications
-  const company = "StageVest Inc.";
-  const gender = "Man";
+  // Placeholder data for features not yet in profiles
   const interests = ["Music", "Tech", "Travel", "Networking", "Events", "Startups"];
   const frequentCities = ["Paris, France", "Miami, FL"];
 
@@ -239,11 +240,10 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
       <EditProfileDialog 
         open={isEditOpen} 
         onOpenChange={setIsEditOpen}
-        applicationData={applicationData}
-        userEmail={user?.email}
+        profileData={profileData}
+        userId={user?.id}
         onSave={() => {
-          // Refetch data after save
-          // implementation here
+          fetchProfileData();
         }}
       />
     </div>
