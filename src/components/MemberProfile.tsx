@@ -485,6 +485,8 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
         onOpenChange={setIsLocationsEditOpen}
         userId={user?.id}
         currentLocations={profileData?.frequently_visited_cities || []}
+        currentLocation={profileData?.current_location || null}
+        origin={profileData?.origin || null}
         onSave={() => {
           fetchProfileData();
         }}
