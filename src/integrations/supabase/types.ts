@@ -129,6 +129,7 @@ export type Database = {
           current_location: string | null
           email: string | null
           first_name: string | null
+          frequently_visited_cities: string[] | null
           gender: string | null
           id: string
           instagram: string | null
@@ -150,6 +151,7 @@ export type Database = {
           current_location?: string | null
           email?: string | null
           first_name?: string | null
+          frequently_visited_cities?: string[] | null
           gender?: string | null
           id?: string
           instagram?: string | null
@@ -171,6 +173,7 @@ export type Database = {
           current_location?: string | null
           email?: string | null
           first_name?: string | null
+          frequently_visited_cities?: string[] | null
           gender?: string | null
           id?: string
           instagram?: string | null
