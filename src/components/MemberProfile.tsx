@@ -1,6 +1,9 @@
-import { User, Instagram, Briefcase, Building2, MapPin, Plane, Star, Music, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { User, Instagram, Briefcase, MapPin, Plane, Star, Music, X, Pencil, Linkedin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import EditProfileDialog from "./EditProfileDialog";
 
 interface MemberProfileProps {
   profile: any;
@@ -8,18 +11,70 @@ interface MemberProfileProps {
   onClose?: () => void;
 }
 
+interface ApplicationData {
+  first_name: string;
+  last_name: string;
+  birthday: string | null;
+  current_location: string | null;
+  origin: string | null;
+  professions: string[] | null;
+  introduction: string | null;
+  instagram: string | null;
+  linkedin: string | null;
+  photo_url: string | null;
+}
 
 const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
-  const firstName = profile?.first_name || user?.user_metadata?.first_name || 'Member';
-  const lastName = profile?.last_name || user?.user_metadata?.last_name || '';
-  const age = 28;
+  const [applicationData, setApplicationData] = useState<ApplicationData | null>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchApplicationData = async () => {
+      if (!user?.email) return;
+      
+      // implementation here
+      const { data, error } = await supabase
+        .from('membership_applications')
+        .select('first_name, last_name, birthday, current_location, origin, professions, introduction, instagram, linkedin, photo_url')
+        .eq('email', user.email)
+        .eq('status', 'approved')
+        .single();
+      
+      if (!error && data) {
+        setApplicationData(data);
+      }
+    };
+
+    fetchApplicationData();
+  }, [user?.email]);
+
+  // Use application data first, then profile, then user metadata
+  const firstName = applicationData?.first_name || profile?.first_name || user?.user_metadata?.first_name || 'Member';
+  const lastName = applicationData?.last_name || profile?.last_name || user?.user_metadata?.last_name || '';
   
-  const profession = "Software Developer";
-  const company = "StageVest Inc.";
-  const location = "Los Angeles, CA";
-  const origin = "New York, NY";
-  const instagram = "@" + firstName.toLowerCase();
-  const bio = "Builder of things, lover of chaos (controlled, mostly). Addicted to coffee, travel, and high-speed strategy. Always looking for the next big opportunity! 🎯";
+  // Calculate age from birthday
+  const calculateAge = (birthday: string | null): number | null => {
+    if (!birthday) return null;
+    const birthDate = new Date(birthday);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+  
+  const age = calculateAge(applicationData?.birthday || null);
+  const location = applicationData?.current_location || "Not specified";
+  const origin = applicationData?.origin || "Not specified";
+  const professions = applicationData?.professions || [];
+  const bio = applicationData?.introduction || "No bio yet.";
+  const instagram = applicationData?.instagram || null;
+  const linkedin = applicationData?.linkedin || null;
+  const photoUrl = applicationData?.photo_url || profile?.avatar_url || null;
+
+  // Placeholder data for features not yet in applications
   const interests = ["Music", "Tech", "Travel", "Networking", "Events", "Startups"];
   const frequentCities = ["Paris, France", "Miami, FL"];
 
@@ -34,34 +89,49 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
 
       {/* Content */}
       <div className="relative z-10 pt-8 px-4 max-w-lg mx-auto">
-        {/* Top bar with close button */}
-        {onClose && (
-          <div className="flex justify-start mb-6">
+        {/* Top bar with close and edit buttons */}
+        <div className="flex justify-between mb-6">
+          {onClose ? (
             <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-background/30 backdrop-blur-sm shrink-0">
               <X className="w-5 h-5" />
             </Button>
-          </div>
-        )}
+          ) : (
+            <div />
+          )}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setIsEditOpen(true)} 
+            className="rounded-full bg-background/30 backdrop-blur-sm shrink-0"
+          >
+            <Pencil className="w-5 h-5" />
+          </Button>
+        </div>
 
         {/* Profile Header */}
         <div className="mb-6 flex flex-col items-center text-center">
           <div className="w-32 h-32 rounded-full bg-primary/20 border-4 border-background flex items-center justify-center overflow-hidden mb-4 shadow-lg">
-            {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+            {photoUrl ? (
+              <img src={photoUrl} alt="Profile" className="w-full h-full object-cover" />
             ) : (
               <User className="w-16 h-16 text-primary" />
             )}
           </div>
 
           <h1 className="font-display text-3xl font-bold text-foreground">
-            {firstName} <span className="text-muted-foreground font-normal text-2xl">{age}</span>
+            {firstName} {lastName && <span className="font-normal">{lastName}</span>}
+            {age && <span className="text-muted-foreground font-normal text-2xl ml-2">{age}</span>}
           </h1>
 
-          <p className="text-muted-foreground text-sm mt-1">
-            {profession}, {company}
-          </p>
+          {professions.length > 0 && (
+            <p className="text-muted-foreground text-sm mt-1">
+              {professions.join(", ")}
+            </p>
+          )}
 
-          <p className="text-primary text-sm mt-1">{instagram}</p>
+          {instagram && (
+            <p className="text-primary text-sm mt-1">{instagram}</p>
+          )}
 
           <p className="text-muted-foreground text-sm mt-1">{location}</p>
 
@@ -80,26 +150,30 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
           <h3 className="font-display text-lg font-semibold mb-4 text-foreground">About</h3>
           
           <div className="space-y-3">
-            <div className="flex items-center gap-3 text-sm">
-              <Instagram className="w-4 h-4 text-primary" />
-              <span className="text-primary">{instagram}</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm">
-              <span className="w-4 h-4 flex items-center justify-center text-muted-foreground">🎂</span>
-              <span className="text-foreground/80">{age}</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm">
-              <User className="w-4 h-4 text-muted-foreground" />
-              <span className="text-foreground/80">Man</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm">
-              <Briefcase className="w-4 h-4 text-muted-foreground" />
-              <span className="text-foreground/80">{profession}</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm">
-              <Building2 className="w-4 h-4 text-muted-foreground" />
-              <span className="text-foreground/80">{company}</span>
-            </div>
+            {instagram && (
+              <div className="flex items-center gap-3 text-sm">
+                <Instagram className="w-4 h-4 text-primary" />
+                <span className="text-primary">{instagram}</span>
+              </div>
+            )}
+            {linkedin && (
+              <div className="flex items-center gap-3 text-sm">
+                <Linkedin className="w-4 h-4 text-primary" />
+                <span className="text-primary">{linkedin}</span>
+              </div>
+            )}
+            {age && (
+              <div className="flex items-center gap-3 text-sm">
+                <span className="w-4 h-4 flex items-center justify-center text-muted-foreground">🎂</span>
+                <span className="text-foreground/80">{age} years old</span>
+              </div>
+            )}
+            {professions.length > 0 && (
+              <div className="flex items-center gap-3 text-sm">
+                <Briefcase className="w-4 h-4 text-muted-foreground" />
+                <span className="text-foreground/80">{professions.join(", ")}</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -160,6 +234,18 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
           </div>
         </div>
       </div>
+
+      {/* Edit Profile Dialog */}
+      <EditProfileDialog 
+        open={isEditOpen} 
+        onOpenChange={setIsEditOpen}
+        applicationData={applicationData}
+        userEmail={user?.email}
+        onSave={() => {
+          // Refetch data after save
+          // implementation here
+        }}
+      />
     </div>
   );
 };
