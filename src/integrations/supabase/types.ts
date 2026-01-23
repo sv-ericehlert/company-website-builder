@@ -132,6 +132,7 @@ export type Database = {
           gender: string | null
           id: string
           instagram: string | null
+          interests: string[] | null
           introduction: string | null
           last_name: string | null
           linkedin: string | null
@@ -152,6 +153,7 @@ export type Database = {
           gender?: string | null
           id?: string
           instagram?: string | null
+          interests?: string[] | null
           introduction?: string | null
           last_name?: string | null
           linkedin?: string | null
@@ -172,6 +174,7 @@ export type Database = {
           gender?: string | null
           id?: string
           instagram?: string | null
+          interests?: string[] | null
           introduction?: string | null
           last_name?: string | null
           linkedin?: string | null
