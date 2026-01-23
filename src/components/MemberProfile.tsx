@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from "react";
-import { User, Instagram, Briefcase, Building2, MapPin, Plane, Star, Music, X, Pencil, Linkedin, ExternalLink, FolderOpen } from "lucide-react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { User, Instagram, Briefcase, Building2, MapPin, Plane, Star, Music, X, Pencil, Linkedin, ExternalLink, FolderOpen, Camera } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import EditProfileDialog from "./EditProfileDialog";
 
 interface MemberProfileProps {
@@ -24,11 +25,15 @@ interface ProfileData {
   avatar_url: string | null;
   company: string | null;
   gender: string | null;
+  cover_url: string | null;
 }
 
 const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const fetchProfileData = useCallback(async () => {
     if (!user?.id) return;
@@ -36,7 +41,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
     // implementation here
     const { data, error } = await supabase
       .from('profiles')
-      .select('first_name, last_name, birthday, current_location, origin, professions, introduction, instagram, linkedin, avatar_url, company, gender')
+      .select('first_name, last_name, birthday, current_location, origin, professions, introduction, instagram, linkedin, avatar_url, company, gender, cover_url')
       .eq('user_id', user.id)
       .maybeSingle();
     
@@ -48,6 +53,77 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   useEffect(() => {
     fetchProfileData();
   }, [fetchProfileData]);
+
+  const handleCoverClick = () => {
+    coverInputRef.current?.click();
+  };
+
+  const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user?.id) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload an image file",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please upload an image smaller than 5MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploadingCover(true);
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/cover.${fileExt}`;
+
+      // implementation here
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+
+      // Update profile with new cover URL
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ cover_url: publicUrl })
+        .eq('user_id', user.id);
+
+      if (updateError) throw updateError;
+
+      setProfileData(prev => prev ? { ...prev, cover_url: publicUrl } : null);
+
+      toast({
+        title: "Cover photo updated",
+        description: "Your cover photo has been updated",
+      });
+    } catch (error) {
+      console.error('Cover upload error:', error);
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload cover photo. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploadingCover(false);
+    }
+  };
 
   // Use profile data first, then passed profile prop, then user metadata
   const firstName = profileData?.first_name || profile?.first_name || user?.user_metadata?.first_name || 'Member';
@@ -67,7 +143,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   };
   
   const calculatedAge = calculateAge(profileData?.birthday || null);
-  const age = calculatedAge ?? 28; // Default to 28 if no birthday
+  const age = calculatedAge ?? 28;
   const location = profileData?.current_location || "Los Angeles, CA";
   const origin = profileData?.origin || "New York, NY";
   const professions = profileData?.professions?.length ? profileData.professions : ["Software Developer"];
@@ -77,6 +153,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   const photoUrl = profileData?.avatar_url || profile?.avatar_url || null;
   const company = profileData?.company || "StageVest Inc.";
   const gender = profileData?.gender || "Man";
+  const coverUrl = profileData?.cover_url || null;
 
   // Placeholder data for features not yet in profiles
   const interests = ["Music", "Tech", "Travel", "Networking", "Events", "Startups"];
@@ -87,13 +164,39 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
     { title: "Event Series", description: "Curated networking events in major cities", link: "#" },
   ];
 
+  const defaultCoverImage = "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200";
+
   return (
     <div className="relative min-h-[calc(100vh-8rem)] overflow-hidden">
       {/* Hero Cover Image */}
       <div className="absolute inset-0 h-80 z-0">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/30 via-primary/20 to-background" />
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200')] bg-cover bg-center opacity-40" />
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-40"
+          style={{ backgroundImage: `url('${coverUrl || defaultCoverImage}')` }}
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background" />
+        
+        {/* Change Cover Button */}
+        <button
+          onClick={handleCoverClick}
+          disabled={isUploadingCover}
+          className="absolute bottom-4 right-4 flex items-center gap-2 px-3 py-2 rounded-full bg-background/60 backdrop-blur-sm border border-border/50 text-sm text-foreground hover:bg-background/80 transition-colors z-20"
+        >
+          {isUploadingCover ? (
+            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <Camera className="w-4 h-4" />
+          )}
+          <span className="hidden sm:inline">{isUploadingCover ? "Uploading..." : "Change Cover"}</span>
+        </button>
+        <input
+          ref={coverInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleCoverChange}
+          className="hidden"
+        />
       </div>
 
       {/* Content */}
@@ -204,7 +307,6 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
             </div>
           </div>
         </div>
-
 
         {/* Portfolio Section */}
         <div className="bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl p-4 mb-4">
