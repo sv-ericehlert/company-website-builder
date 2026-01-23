@@ -11,6 +11,7 @@ import EditLocationsDialog from "./EditLocationsDialog";
 import EditAboutDialog from "./EditAboutDialog";
 import EditBioDialog from "./EditBioDialog";
 import EditHeaderDialog from "./EditHeaderDialog";
+import memberBadge from "@/assets/member-badge.png";
 
 interface MemberProfileProps {
   profile: any;
@@ -278,8 +279,9 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
 
           <p className="text-muted-foreground text-sm mt-1">{location}</p>
 
-          <Badge variant="secondary" className="mt-3 bg-primary/20 text-primary border-0">
-            👑 Member
+          <Badge variant="secondary" className="mt-3 bg-primary/20 text-primary border-0 gap-1.5">
+            <img src={memberBadge} alt="" className="w-4 h-4" />
+            Member
           </Badge>
 
           <Button
