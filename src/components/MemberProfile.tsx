@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import EditProfileDialog from "./EditProfileDialog";
 import EditPortfolioDialog from "./EditPortfolioDialog";
 import EditInterestsDialog from "./EditInterestsDialog";
+import EditLocationsDialog from "./EditLocationsDialog";
 
 interface MemberProfileProps {
   profile: any;
@@ -29,6 +30,7 @@ interface ProfileData {
   gender: string | null;
   cover_url: string | null;
   interests: string[] | null;
+  frequently_visited_cities: string[] | null;
 }
 
 interface PortfolioItem {
@@ -46,6 +48,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isPortfolioEditOpen, setIsPortfolioEditOpen] = useState(false);
   const [isInterestsEditOpen, setIsInterestsEditOpen] = useState(false);
+  const [isLocationsEditOpen, setIsLocationsEditOpen] = useState(false);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
   const coverInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -56,7 +59,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
     // implementation here
     const { data, error } = await supabase
       .from('profiles')
-      .select('first_name, last_name, birthday, current_location, origin, professions, introduction, instagram, linkedin, avatar_url, company, gender, cover_url, interests')
+      .select('first_name, last_name, birthday, current_location, origin, professions, introduction, instagram, linkedin, avatar_url, company, gender, cover_url, interests, frequently_visited_cities')
       .eq('user_id', user.id)
       .maybeSingle();
     
@@ -189,8 +192,9 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
     ? profileData.interests 
     : ["Music", "Tech", "Travel", "Networking", "Events", "Startups", "Art", "Fashion", "Sports", "Food"];
 
-  // Placeholder data for features not yet in profiles
-  const frequentCities = ["Paris, France", "Miami, FL"];
+  const frequentCities = profileData?.frequently_visited_cities?.length 
+    ? profileData.frequently_visited_cities 
+    : [];
 
   const defaultCoverImage = "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200";
 
@@ -324,7 +328,18 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
 
         {/* My Cities Section */}
         <div className="bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl p-4 mb-4">
-          <h3 className="font-display text-lg font-semibold mb-4 text-foreground">My cities</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-display text-lg font-semibold text-foreground">My cities</h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsLocationsEditOpen(true)}
+              className="text-primary hover:text-primary/80"
+            >
+              <Pencil className="w-4 h-4 mr-1" />
+              Edit
+            </Button>
+          </div>
           
           <div className="space-y-3">
             <div className="flex items-center gap-3 text-sm">
@@ -335,12 +350,14 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
               <Plane className="w-4 h-4 text-muted-foreground" />
               <span className="text-foreground/80">From {origin}</span>
             </div>
-            <div className="flex items-center gap-3 text-sm">
-              <Star className="w-4 h-4 text-primary" />
-              <span className="text-foreground/80">
-                <span className="text-primary">Often Visits:</span> {frequentCities.join(" and ")}
-              </span>
-            </div>
+            {frequentCities.length > 0 && (
+              <div className="flex items-center gap-3 text-sm">
+                <Star className="w-4 h-4 text-primary" />
+                <span className="text-foreground/80">
+                  <span className="text-primary">Often Visits:</span> {frequentCities.join(", ")}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -447,6 +464,17 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
         onOpenChange={setIsInterestsEditOpen}
         userId={user?.id}
         currentInterests={profileData?.interests || []}
+        onSave={() => {
+          fetchProfileData();
+        }}
+      />
+
+      {/* Edit Locations Dialog */}
+      <EditLocationsDialog
+        open={isLocationsEditOpen}
+        onOpenChange={setIsLocationsEditOpen}
+        userId={user?.id}
+        currentLocations={profileData?.frequently_visited_cities || []}
         onSave={() => {
           fetchProfileData();
         }}
