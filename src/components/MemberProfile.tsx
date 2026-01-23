@@ -214,40 +214,40 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   };
 
   return (
-    <div className="relative min-h-[calc(100vh-8rem)] overflow-hidden">
-      {/* Hero Cover Image */}
-      <div className="absolute inset-0 h-80 z-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/30 via-primary/20 to-background" />
+    <div className="relative min-h-screen">
+      {/* Fixed Background Cover Image */}
+      <div className="fixed inset-0 z-0">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-40"
+          className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url('${coverUrl || defaultCoverImage}')` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background" />
-        
-        {/* Change Cover Button */}
-        <button
-          onClick={handleCoverClick}
-          disabled={isUploadingCover}
-          className="absolute bottom-4 right-4 flex items-center gap-2 px-3 py-2 rounded-full bg-background/60 backdrop-blur-sm border border-border/50 text-sm text-foreground hover:bg-background/80 transition-colors z-20"
-        >
-          {isUploadingCover ? (
-            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-          ) : (
-            <Camera className="w-4 h-4" />
-          )}
-          <span className="hidden sm:inline">{isUploadingCover ? "Uploading..." : "Change Cover"}</span>
-        </button>
-        <input
-          ref={coverInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleCoverChange}
-          className="hidden"
-        />
+        <div className="absolute inset-0 bg-background/70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/20 via-transparent to-background/90" />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 pt-8 px-4 max-w-lg mx-auto">
+      {/* Change Cover Button - Fixed position */}
+      <button
+        onClick={handleCoverClick}
+        disabled={isUploadingCover}
+        className="fixed top-4 right-4 flex items-center gap-2 px-3 py-2 rounded-full bg-background/60 backdrop-blur-sm border border-border/50 text-sm text-foreground hover:bg-background/80 transition-colors z-30"
+      >
+        {isUploadingCover ? (
+          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        ) : (
+          <Camera className="w-4 h-4" />
+        )}
+        <span className="hidden sm:inline">{isUploadingCover ? "Uploading..." : "Change Cover"}</span>
+      </button>
+      <input
+        ref={coverInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleCoverChange}
+        className="hidden"
+      />
+
+      {/* Scrollable Content */}
+      <div className="relative z-10 pt-8 px-4 max-w-lg mx-auto pb-8">
         {/* Top bar with close button */}
         {onClose && (
           <div className="flex justify-start mb-6">
