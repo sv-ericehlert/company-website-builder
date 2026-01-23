@@ -7,28 +7,28 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
-interface ApplicationData {
-  first_name: string;
-  last_name: string;
-  birthday: string | null;
+interface ProfileData {
+  first_name: string | null;
+  last_name: string | null;
   current_location: string | null;
   origin: string | null;
   professions: string[] | null;
   introduction: string | null;
   instagram: string | null;
   linkedin: string | null;
-  photo_url: string | null;
+  company: string | null;
+  gender: string | null;
 }
 
 interface EditProfileDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  applicationData: ApplicationData | null;
-  userEmail: string | undefined;
+  profileData: ProfileData | null;
+  userId: string | undefined;
   onSave: () => void;
 }
 
-const EditProfileDialog = ({ open, onOpenChange, applicationData, userEmail, onSave }: EditProfileDialogProps) => {
+const EditProfileDialog = ({ open, onOpenChange, profileData, userId, onSave }: EditProfileDialogProps) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   
@@ -41,28 +41,32 @@ const EditProfileDialog = ({ open, onOpenChange, applicationData, userEmail, onS
     introduction: "",
     instagram: "",
     linkedin: "",
+    company: "",
+    gender: "",
   });
 
   useEffect(() => {
-    if (applicationData) {
+    if (profileData) {
       setFormData({
-        first_name: applicationData.first_name || "",
-        last_name: applicationData.last_name || "",
-        current_location: applicationData.current_location || "",
-        origin: applicationData.origin || "",
-        professions: applicationData.professions?.join(", ") || "",
-        introduction: applicationData.introduction || "",
-        instagram: applicationData.instagram || "",
-        linkedin: applicationData.linkedin || "",
+        first_name: profileData.first_name || "",
+        last_name: profileData.last_name || "",
+        current_location: profileData.current_location || "",
+        origin: profileData.origin || "",
+        professions: profileData.professions?.join(", ") || "",
+        introduction: profileData.introduction || "",
+        instagram: profileData.instagram || "",
+        linkedin: profileData.linkedin || "",
+        company: profileData.company || "",
+        gender: profileData.gender || "",
       });
     }
-  }, [applicationData]);
+  }, [profileData]);
 
   const handleSave = async () => {
-    if (!userEmail) {
+    if (!userId) {
       toast({
         title: "Error",
-        description: "User email not found",
+        description: "User not found",
         variant: "destructive",
       });
       return;
@@ -72,23 +76,25 @@ const EditProfileDialog = ({ open, onOpenChange, applicationData, userEmail, onS
 
     // implementation here
     const { error } = await supabase
-      .from('membership_applications')
+      .from('profiles')
       .update({
-        first_name: formData.first_name,
-        last_name: formData.last_name,
+        first_name: formData.first_name || null,
+        last_name: formData.last_name || null,
         current_location: formData.current_location || null,
         origin: formData.origin || null,
         professions: formData.professions ? formData.professions.split(",").map(p => p.trim()) : null,
         introduction: formData.introduction || null,
         instagram: formData.instagram || null,
         linkedin: formData.linkedin || null,
+        company: formData.company || null,
+        gender: formData.gender || null,
       })
-      .eq('email', userEmail)
-      .eq('status', 'approved');
+      .eq('user_id', userId);
 
     setIsLoading(false);
 
     if (error) {
+      console.error('Profile update error:', error);
       toast({
         title: "Error",
         description: "Failed to update profile. Please try again.",
@@ -104,9 +110,6 @@ const EditProfileDialog = ({ open, onOpenChange, applicationData, userEmail, onS
 
     onSave();
     onOpenChange(false);
-    
-    // Reload to show updated data
-    window.location.reload();
   };
 
   return (
@@ -163,6 +166,26 @@ const EditProfileDialog = ({ open, onOpenChange, applicationData, userEmail, onS
               placeholder="e.g., Software Developer, Designer"
               value={formData.professions}
               onChange={(e) => setFormData({ ...formData, professions: e.target.value })}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="company">Company</Label>
+            <Input
+              id="company"
+              placeholder="e.g., StageVest Inc."
+              value={formData.company}
+              onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="gender">Gender</Label>
+            <Input
+              id="gender"
+              placeholder="e.g., Man, Woman, Non-binary"
+              value={formData.gender}
+              onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
             />
           </div>
 
