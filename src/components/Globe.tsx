@@ -84,20 +84,27 @@ interface CityMarkerProps {
 const CityMarker = ({ city, radius, onSelect, isSelected }: CityMarkerProps) => {
   const position = useMemo(() => latLngToVector3(city.lat, city.lng, radius), [city.lat, city.lng, radius]);
   const [hovered, setHovered] = useState(false);
-  const meshRef = useRef<THREE.Mesh>(null);
+  const groupRef = useRef<THREE.Group>(null);
+  
+  // Calculate the normal direction (pointing outward from globe center)
+  const normal = useMemo(() => position.clone().normalize(), [position]);
   
   useFrame(() => {
-    if (meshRef.current) {
-      const scale = hovered || isSelected ? 1.5 : 1;
-      meshRef.current.scale.lerp(new THREE.Vector3(scale, scale, scale), 0.1);
+    if (groupRef.current) {
+      const scale = hovered || isSelected ? 1.3 : 1;
+      groupRef.current.scale.lerp(new THREE.Vector3(scale, scale, scale), 0.1);
     }
   });
 
+  // Gold colors
+  const goldColor = "#FFD700";
+  const goldHover = "#FFEC8B";
+  const goldSelected = "#FFA500";
+
   return (
     <group position={position}>
-      {/* Main dot */}
-      <mesh
-        ref={meshRef}
+      <group 
+        ref={groupRef}
         onClick={(e) => {
           e.stopPropagation();
           onSelect(city);
@@ -112,23 +119,39 @@ const CityMarker = ({ city, radius, onSelect, isSelected }: CityMarkerProps) => 
           document.body.style.cursor = 'auto';
         }}
       >
-        <sphereGeometry args={[0.018, 16, 16]} />
-        <meshBasicMaterial 
-          color={isSelected ? "#ff5722" : hovered ? "#ff7043" : "#ff4500"} 
-        />
-      </mesh>
-      {/* Subtle outer ring */}
-      <mesh>
+        {/* Pin head (sphere) */}
+        <mesh position={[normal.x * 0.035, normal.y * 0.035, normal.z * 0.035]}>
+          <sphereGeometry args={[0.018, 16, 16]} />
+          <meshBasicMaterial 
+            color={isSelected ? goldSelected : hovered ? goldHover : goldColor} 
+          />
+        </mesh>
+        {/* Pin point (cone) - oriented along the normal */}
+        <mesh 
+          position={[normal.x * 0.012, normal.y * 0.012, normal.z * 0.012]}
+          quaternion={new THREE.Quaternion().setFromUnitVectors(
+            new THREE.Vector3(0, 1, 0),
+            normal.clone().negate()
+          )}
+        >
+          <coneGeometry args={[0.008, 0.035, 8]} />
+          <meshBasicMaterial 
+            color={isSelected ? goldSelected : hovered ? goldHover : goldColor} 
+          />
+        </mesh>
+      </group>
+      {/* Subtle glow ring */}
+      <mesh position={[normal.x * 0.035, normal.y * 0.035, normal.z * 0.035]}>
         <sphereGeometry args={[0.025, 16, 16]} />
         <meshBasicMaterial 
-          color="#ff4500" 
+          color={goldColor} 
           transparent 
           opacity={hovered || isSelected ? 0.3 : 0.15}
         />
       </mesh>
       {(hovered || isSelected) && (
         <Html
-          position={[0, 0.06, 0]}
+          position={[normal.x * 0.08, normal.y * 0.08, normal.z * 0.08]}
           center
           style={{
             pointerEvents: 'none',
