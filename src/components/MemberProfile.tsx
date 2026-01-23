@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { User, Instagram, Briefcase, Building2, MapPin, Plane, Star, Music, X, Pencil, Linkedin, ExternalLink, FolderOpen, Camera } from "lucide-react";
+import { User, Instagram, Briefcase, Building2, MapPin, Plane, Star, X, Pencil, Linkedin, ExternalLink, FolderOpen, Camera } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -349,21 +349,6 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
             <Badge variant="outline" className="bg-muted/50 border-border text-muted-foreground">
               +10 more
             </Badge>
-          </div>
-        </div>
-
-        {/* Profile Song Section */}
-        <div className="bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl p-4 mb-8">
-          <h3 className="font-display text-lg font-semibold mb-4 text-foreground">Profile song</h3>
-          
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-              <Music className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <p className="font-medium text-foreground">DAISIES</p>
-              <p className="text-sm text-muted-foreground">Justin Bieber</p>
-            </div>
           </div>
         </div>
       </div>
