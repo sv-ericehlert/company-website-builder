@@ -205,6 +205,31 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
 
   const defaultCoverImage = "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200";
 
+  const handleRemoveInterest = async (interestToRemove: string) => {
+    if (!user?.id) return;
+    
+    const updatedInterests = (profileData?.interests || []).filter(i => i !== interestToRemove);
+    
+    // implementation here
+    const { error } = await supabase
+      .from('profiles')
+      .update({ interests: updatedInterests })
+      .eq('user_id', user.id);
+
+    if (error) {
+      console.error('Remove interest error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to remove interest",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Update local state
+    setProfileData(prev => prev ? { ...prev, interests: updatedInterests } : null);
+  };
+
   const getTypeIcon = (type: 'photo' | 'video' | 'link') => {
     switch (type) {
       case 'photo': return <Image className="w-4 h-4" />;
@@ -503,9 +528,15 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
               <Badge 
                 key={index} 
                 variant="outline" 
-                className="bg-primary/10 border-primary/30 text-primary hover:bg-primary/20 transition-colors"
+                className="bg-primary/10 border-primary/30 text-primary hover:bg-primary/20 transition-colors gap-1 pr-1"
               >
                 {interest}
+                <button
+                  onClick={() => handleRemoveInterest(interest)}
+                  className="ml-1 p-0.5 rounded-full hover:bg-primary/30 transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                </button>
               </Badge>
             ))}
           </div>
