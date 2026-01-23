@@ -184,7 +184,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   const coverUrl = profileData?.cover_url || null;
 
   // Placeholder data for features not yet in profiles
-  const interests = ["Music", "Tech", "Travel", "Networking", "Events", "Startups"];
+  const interests = ["Music", "Tech", "Travel", "Networking", "Events", "Startups", "Art", "Fashion", "Sports", "Food"];
   const frequentCities = ["Paris, France", "Miami, FL"];
 
   const defaultCoverImage = "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200";
@@ -390,7 +390,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
           <h3 className="font-display text-lg font-semibold mb-4 text-foreground">Interests</h3>
           
           <div className="flex flex-wrap gap-2">
-            {interests.map((interest, index) => (
+            {interests.slice(0, 10).map((interest, index) => (
               <Badge 
                 key={index} 
                 variant="outline" 
@@ -399,9 +399,6 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
                 {interest}
               </Badge>
             ))}
-            <Badge variant="outline" className="bg-muted/50 border-border text-muted-foreground">
-              +10 more
-            </Badge>
           </div>
         </div>
       </div>
