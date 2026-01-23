@@ -8,6 +8,7 @@ import EditProfileDialog from "./EditProfileDialog";
 import EditPortfolioDialog from "./EditPortfolioDialog";
 import EditInterestsDialog from "./EditInterestsDialog";
 import EditLocationsDialog from "./EditLocationsDialog";
+import EditAboutDialog from "./EditAboutDialog";
 
 interface MemberProfileProps {
   profile: any;
@@ -46,6 +47,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isAboutEditOpen, setIsAboutEditOpen] = useState(false);
   const [isPortfolioEditOpen, setIsPortfolioEditOpen] = useState(false);
   const [isInterestsEditOpen, setIsInterestsEditOpen] = useState(false);
   const [isLocationsEditOpen, setIsLocationsEditOpen] = useState(false);
@@ -299,7 +301,7 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setIsEditOpen(true)}
+              onClick={() => setIsAboutEditOpen(true)}
               className="text-primary hover:text-primary/80"
             >
               <Pencil className="w-4 h-4 mr-1" />
@@ -487,6 +489,17 @@ const MemberProfile = ({ profile, user, onClose }: MemberProfileProps) => {
         currentLocations={profileData?.frequently_visited_cities || []}
         currentLocation={profileData?.current_location || null}
         origin={profileData?.origin || null}
+        onSave={() => {
+          fetchProfileData();
+        }}
+      />
+
+      {/* Edit About Dialog */}
+      <EditAboutDialog
+        open={isAboutEditOpen}
+        onOpenChange={setIsAboutEditOpen}
+        userId={user?.id}
+        profileData={profileData}
         onSave={() => {
           fetchProfileData();
         }}
