@@ -185,6 +185,32 @@ const Auth = () => {
                 ? "Sign in to access your account" 
                 : "Join the network today"}
             </p>
+
+            <div className="mt-4 text-sm text-muted-foreground">
+              {isLogin ? (
+                <p>
+                  Don’t have an account?{" "}
+                  <button
+                    type="button"
+                    onClick={() => setIsLogin(false)}
+                    className="underline underline-offset-4 hover:text-foreground transition-colors"
+                  >
+                    Create one
+                  </button>
+                </p>
+              ) : (
+                <p>
+                  Already have an account?{" "}
+                  <button
+                    type="button"
+                    onClick={() => setIsLogin(true)}
+                    className="underline underline-offset-4 hover:text-foreground transition-colors"
+                  >
+                    Sign in
+                  </button>
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Form */}
