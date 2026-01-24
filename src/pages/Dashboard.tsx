@@ -15,6 +15,7 @@ const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState("home");
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -84,7 +85,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Tabs defaultValue="home" className="h-full">
+      <Tabs value={tab} onValueChange={setTab} className="h-full">
         {/* Header */}
         <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
           <div className="w-full px-6 md:px-8 h-16 flex items-center justify-between">
@@ -169,7 +170,7 @@ const Dashboard = () => {
                     <p className="text-muted-foreground">{user?.email}</p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={() => setTab("profile")}>
                   <Settings className="w-4 h-4 mr-2" />
                   Edit Profile
                 </Button>
