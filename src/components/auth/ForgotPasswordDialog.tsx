@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
 
 const schema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -46,8 +47,17 @@ export default function ForgotPasswordDialog({
 
     try {
       // implementation here
-      // Dummy implementation: in production this would request a password reset email from the backend.
-      await new Promise((r) => setTimeout(r, 650));
+      const redirectTo = `${window.location.origin}/reset-password`;
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo,
+      });
+      if (resetError) {
+        throw resetError;
+      }
+      onSent?.();
+      onOpenChange(false);
+    } catch {
+      // Avoid revealing whether the email exists.
       onSent?.();
       onOpenChange(false);
     } finally {
