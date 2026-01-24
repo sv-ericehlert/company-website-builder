@@ -8,6 +8,7 @@ import Logo from "@/components/Logo";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import ForgotPasswordDialog from "@/components/auth/ForgotPasswordDialog";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -27,6 +28,7 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [forgotOpen, setForgotOpen] = useState(false);
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -261,6 +263,18 @@ const Auth = () => {
               {errors.password && (
                 <p className="text-sm text-destructive">{errors.password}</p>
               )}
+
+              {isLogin && (
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setForgotOpen(true)}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+              )}
             </div>
 
             <Button 
@@ -275,6 +289,18 @@ const Auth = () => {
                 : (isLogin ? "Sign In" : "Create Account")}
             </Button>
           </form>
+
+          <ForgotPasswordDialog
+            open={forgotOpen}
+            onOpenChange={setForgotOpen}
+            defaultEmail={email}
+            onSent={() => {
+              toast({
+                title: "Reset link sent",
+                description: "If an account exists for that email, you’ll receive a reset link shortly. (Demo)",
+              });
+            }}
+          />
 
         </div>
       </main>
